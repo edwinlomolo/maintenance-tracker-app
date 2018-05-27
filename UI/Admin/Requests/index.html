@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Maintenance Tracker App - Requests</title>
+</head>
+<style>
+	#maintenance {
+		border-collapse: collapse;
+		width: 100%;
+	}
+	#maintenance td, #maintenance th {
+		border: 1px solid #ddd;
+		padding: 8px
+	}
+	#maintenance tr:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+	#maintenance tr:hover {
+		background-color: #ddd;
+	}
+	#maintenance th {
+		padding-top: 12px;
+		padding-bottom: 12px;
+		text-align: left;
+		background-color: #4caf50;
+		color: white;
+	}
+	.btn-submit {
+		padding: 10px 16px;
+		display: inline-block;
+		margin: 8px 0;
+		cursor: pointer;
+		border-radius: 4px;
+		border: none;
+		color: black;
+		text-decoration: none;
+		background-color: #4caf50;
+	}
+	.btn-danger {
+		padding: 10px 16px;
+		display: inline-block;
+		margin: 8px 0;
+		cursor: pointer;
+		border-radius: 4px;
+		border: none;
+		color: black;
+		text-decoration: none;
+		background-color: red;
+	}
+	.btn-danger:hover {
+		background-color: firebrick;
+	}
+	.btn-submit:hover {
+		background-color: #45a049;
+	}
+</style>
+<body>
+	<table id="maintenance">
+		<tr>
+			<th>#</th>
+			<th>Title</th>
+			<th>Description</th>
+			<th>Approve</th>
+			<th>Disapprove</th>
+			<th>Resolve</th>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><h4>Leaking pipe</h4></td>
+			<td>I have a leaking pipe in my neighbour. It has been leaking for a week now. Its very swampy here!</td>
+			<td><a class="btn-submit" href="#">Approve</a></td>
+			<td><a class="btn-danger" href="#">Disapprove</a></td>
+			<td><a class="btn-submit" href="#">Resolve</a></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><h4>Bad weather road</h4></td>
+			<td>Its really horible! The roads are bad! I can't get my limo through!</td>
+			<td><a class="btn-submit" href="#">Approve</a></td>
+			<td><a class="btn-danger" href="#">Disapprove</a></td>
+			<td><a class="btn-submit" href="#">Resolve</a></td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><h4>Poor lawning</h4></td>
+			<td>Mike did my lawn really well. The other guy cut down my trees! I need Mike to come and repair the mess the other guy created.</td>
+			<td><a class="btn-submit" href="#">Approve</a></td>
+			<td><a class="btn-danger" href="#">Disapprove</a></td>
+			<td><a class="btn-submit" href="#">Resolve</a></td>
+	</table>
+</body>
+</html>
