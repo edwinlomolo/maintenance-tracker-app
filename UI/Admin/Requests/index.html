@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Maintenance Tracker App - Requests</title>
+</head>
+<style>
+.container {
+	padding: 2rem;
+}
+	#maintenance {
+		border-collapse: collapse;
+		width: 100%;
+	}
+	#maintenance td, #maintenance th {
+		border: 1px solid #ddd;
+		padding: 8px
+	}
+	#maintenance tr:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+	#maintenance tr:hover {
+		background-color: #ddd;
+	}
+	#maintenance th {
+		padding-top: 12px;
+		padding-bottom: 12px;
+		text-align: left;
+		background-color: #4caf50;
+		color: white;
+	}
+	.btn-submit {
+		padding: 10px 16px;
+		display: inline-block;
+		margin: 8px 0;
+		cursor: pointer;
+		border-radius: 4px;
+		border: none;
+		color: black;
+		text-decoration: none;
+		background-color: #4caf50;
+	}
+	.btn-danger {
+		padding: 10px 16px;
+		display: inline-block;
+		margin: 8px 0;
+		cursor: pointer;
+		border-radius: 4px;
+		border: none;
+		color: black;
+		text-decoration: none;
+		background-color: red;
+	}
+	.btn-danger:hover {
+		background-color: firebrick;
+	}
+	.btn-submit:hover {
+		background-color: #45a049;
+	}
+	ul {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		overflow: hidden;
+		background-color: #333;	
+	}
+	li {
+		float: left;
+	}
+	li a {
+		text-decoration: none;
+		text-align: center;
+		padding: 12px 18px;
+		color: white;
+		display: block;
+	}
+	li a:hover {
+		background-color: #111;
+	}
+	.success {
+		background-color: #4caf50;
+	}
+	.reject {
+		background-color: red;
+	}
+</style>
+<body>
+	<nav>
+		<ul>
+			<li><a href="/">Home</a></li>
+			<li style="float: right"><a href="#">Log Out</a></li>
+		</ul>
+	</nav>
+	<div class="container">
+		<table id="maintenance">
+		<tr>
+			<th>#</th>
+			<th>Title</th>
+			<th>Description</th>
+			<th>Approve</th>
+			<th>Disapprove</th>
+			<th>Resolve</th>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><h4>Leaking pipe</h4></td>
+			<td>I have a leaking pipe in my neighbour. It has been leaking for a week now. Its very swampy here!</td>
+			<td><a class="btn-submit" href="#">Approve</a></td>
+			<td><a class="btn-danger" href="#">Disapprove</a></td>
+			<td><a class="btn-submit" href="#">Resolve</a></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><h4>Poor lawning</h4></td>
+			<td>Mike did my lawn really well. The other guy cut down my trees! I need Mike to come and repair the mess the other guy created.</td>
+			<td><a class="btn-submit" href="#">Approve</a></td>
+			<td><a class="btn-danger" href="#">Disapprove</a></td>
+			<td><a class="btn-submit" href="#">Resolve</a></td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><h4>Tampered security light</h4></td>
+			<td>We walk in the dark! We sleep scared because of the dark!. Someone knocked down the security lights at the junction. Its looks scary during the night.</td>
+			<td><a class="btn-submit" href="#">Approve</a></td>
+			<td><a class="btn-danger" href="#">Disapprove</a></td>
+			<td><a class="btn-submit" href="#">Resolve</a></td>
+		</tr>
+	</table>
+</div>
+</body>
+</html>
