@@ -4,6 +4,9 @@
 	<title>Maintenance Tracker App - Requests</title>
 </head>
 <style>
+.container {
+	padding: 2rem;
+}
 	#maintenance {
 		border-collapse: collapse;
 		width: 100%;
@@ -53,9 +56,38 @@
 	.btn-submit:hover {
 		background-color: #45a049;
 	}
+	ul {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		overflow: hidden;
+		background-color: #333;	
+	}
+	li {
+		float: left;
+	}
+	li a {
+		text-decoration: none;
+		text-align: center;
+		padding: 12px 18px;
+		color: white;
+		display: block;
+	}
+	li a:hover {
+		background-color: #111;
+	}
 </style>
 <body>
-	<table id="maintenance">
+	<nav>
+		<ul>
+			<li><a href="/">Home</a></li>
+			<li><a href="#">For Admin</a></li>
+			<li><a href="#">For User</a></li>
+			<li style="float: right"><a href="#">Log Out</a></li>
+		</ul>
+	</nav>
+	<div class="container">
+		<table id="maintenance">
 		<tr>
 			<th>#</th>
 			<th>Title</th>
@@ -87,6 +119,8 @@
 			<td><a class="btn-submit" href="#">Approve</a></td>
 			<td><a class="btn-danger" href="#">Disapprove</a></td>
 			<td><a class="btn-submit" href="#">Resolve</a></td>
+		</tr>
 	</table>
+</div>
 </body>
 </html>
