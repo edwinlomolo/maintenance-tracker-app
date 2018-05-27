@@ -4,6 +4,9 @@
 	<title>Maintenance Tracker - Sign In</title>
 </head>
 <style type="text/css">
+.container {
+	padding: 2rem;
+}
 	.form-group {
 		width: 30%;
 		margin-left: 20rem;
@@ -29,17 +32,41 @@
 		border: none;
 		color: black;
 		background-color: #4caf50;
+		text-decoration: none;
 	}
 	.btn-submit:hover {
 		background-color: #45a049;
+	}
+	ul {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		overflow: hidden;
+		background-color: #333;	
+	}
+	li {
+		float: left;
+	}
+	li a {
+		text-decoration: none;
+		text-align: center;
+		padding: 12px 18px;
+		color: white;
+		display: block;
+	}
+	li a:hover {
+		background-color: #111;
 	}
 </style>
 <body>
 	<nav>
 		<ul>
 			<li><a href="/">Home</a></li>
-			<li><a href="#">Log In</a></li>
-			<li><a href="#">Sign Up</a></li>
+			<li><a href="#">For Admin</a></li>
+			<li><a href="#">For User</a></li>
+			<li style="float: right"><a href="#">About</a></li>
+			<li style="float: right"><a href="#">Sign In</a></li>
+			<li style="float: right"><a href="#">Sign Up</a></li>
 		</ul>
 	</nav>
 	<div class="container">
