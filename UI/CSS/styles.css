@@ -92,3 +92,25 @@ box-sizing: border-box;
 .reject {
 	background-color: red;
 }
+.footer {
+	padding: 20px;
+	text-align: center;
+	margin: 90px auto;
+}
+.container-fluid {
+	padding: 20px;
+	max-width: 800px;
+	margin: 10px auto;
+}
+.content {
+	background-color: #ddd;
+	padding: 20px;
+	text-align: center;
+	margin: 10px auto;
+}
+.header {
+	font-size: 50px;
+}
+.lead {
+	font-size: 30px;
+}
