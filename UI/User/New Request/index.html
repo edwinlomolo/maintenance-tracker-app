@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Maintenance Tracker - New Request</title>
+</head>
+<style>
+.container {
+	padding: 2rem;
+}
+	.form-group {
+		width: 30%;
+		margin-left: 20rem;
+		border-radius: 5px;
+		background-color: #f2f2f2;
+		padding: 20px;
+	}
+	.form-input {
+		width: 100%;
+		padding: 10px 18px;
+		margin: 8px 0;
+		display: inline-block;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		box-sizing: border-box;
+	}
+	.btn-submit {
+		padding: 10px 16px;
+		display: inline-block;
+		margin: 8px 0;
+		cursor: pointer;
+		border-radius: 4px;
+		border: none;
+		color: black;
+		background-color: #4caf50;
+		text-decoration: none;
+	}
+	.btn-submit:hover {
+		background-color: #45a049;
+	}
+	ul {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		overflow: hidden;
+		background-color: #333;	
+	}
+	li {
+		float: left;
+	}
+	li a {
+		text-decoration: none;
+		text-align: center;
+		padding: 12px 18px;
+		color: white;
+		display: block;
+	}
+	li a:hover {
+		background-color: #111;
+	}
+</style>
+<body>
+	<nav>
+		<ul>
+			<li><a href="/">Home</a></li>
+			<li><a href="#">For Admin</a></li>
+			<li><a href="#">For User</a></li>
+			<li style="float: right"><a href="#">Log Out</a></li>
+		</ul>
+	</nav>
+	<div class="container">
+		<div class="form-group">
+			<h2>New Request</h2>
+			<form>
+				<label>Request Title</label>
+				<input class="form-input" type="text" name="title" />
+				<label>Description</label>
+				<textarea rows="5" class="form-input"></textarea>
+				<a class="btn-submit" href="#">Submit Request</a>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
