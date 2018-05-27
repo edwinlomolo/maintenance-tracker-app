@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Maintenance Tracker - Sign In</title>
+	<title>Maintenance Tracker - Sign Up</title>
 </head>
 <style type="text/css">
 .container {
@@ -61,21 +61,26 @@
 <body>
 	<nav>
 		<ul>
-			<li><a href="/">Home</a></li>
-			<li><a href="#">For Admin</a></li>
-			<li><a href="#">For User</a></li>
-			<li style="float: right"><a href="#">About</a></li>
-			<li style="float: right"><a href="#">Sign In</a></li>
-			<li style="float: right"><a href="#">Sign Up</a></li>
+			<li><a href="https://3dw1nm0535.github.io/maintenance-tracker-app-ui/">Home</a></li>
+			<li><a href="https://3dw1nm0535.github.io/maintenance-tracker-app-ui/UI/Admin/Requests/">For Admin</a></li>
+			<li><a href="https://3dw1nm0535.github.io/maintenance-tracker-app-ui/UI/User/Requests/">For User</a></li>
+			<li style="float: right"><a href="https://3dw1nm0535.github.io/maintenance-tracker-app-ui/UI/User/SignIn/">Sign In</a></li>
+			<li style="float: right"><a href="https://3dw1nm0535.github.io/maintenance-tracker-app-ui/UI/User/SignUp/">Sign Up</a></li>
 		</ul>
 	</nav>
 	<div class="container">
 		<div class="form-group">
 			<form>
-				<label>Email</label>
+				<label for="firstname">First Name</label>
+				<input class="form-input" type="text" name="firstname" />
+				<label for="lastname">Last Name</label>
+				<input class="form-input" type="text" name="lastname" />
+				<label for="email">Email</label>
 				<input class="form-input" type="email" name="email" />
-				<label>Password</label>
+				<label for="password">Password</label>
 				<input class="form-input" type="password" name="password" />
+				<label for="confirmPassword">Confirm Password</label>
+				<input class="form-input" type="password" name="confirmPassword" />
 				<a href="#" class="btn-submit">Log In</a>
 			</form>
 		</div>
