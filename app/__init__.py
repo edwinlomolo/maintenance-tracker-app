@@ -21,6 +21,26 @@ def create_app(config_name):
 			"rejected": False,
 			"resolved": False,
 			"created_by": "Edwin"
+		},
+		{
+			"id": 2,
+			"title": "Security",
+			"description": "Crime rate has increased due to tampered security lights.",
+			"location": "Bungoma",
+			"approved": False,
+			"rejected": False,
+			"resolved": False,
+			"created_by": "Edwin"
+		},
+		{
+			"id": 3,
+			"title": "Air pollution",
+			"description": "We have a bad smell in the middle of the town coming from garbage collection tanker.",
+			"location": "Dandora",
+			"approved": False,
+			"rejected": False,
+			"resolved": False,
+			"created_by": "Milly"
 		}
 	]
 
@@ -41,6 +61,7 @@ def create_app(config_name):
 		if request.json:
 			req = {
 				"id": requests[-1]["id"] + 1,
+				"title": request.json.get('title', ''),
 				"description": request.json.get('description', ''),
 				"location": request.json.get('location', ''),
 				"approved": False,
@@ -97,5 +118,25 @@ def create_app(config_name):
 			return jsonify({
 				"message": "Invalid credentials"
 			}), 401
+
+	# get request view for a user
+	@app.route("/users/api/v1.0/requests/", methods=["GET"])
+	def get_request():
+		name = request.headers["name"]
+		reqs = []
+		for item in requests:
+			if item["created_by"] == name:
+				req = {
+					"id": item["id"],
+					"title": item["title"],
+					"description": item["description"],
+					"location": item["location"],
+					"approved": item["approved"],
+					"rejected": item["rejected"],
+					"resolved": item["resolved"],
+					"created_by": item["created_by"]
+				}
+				reqs.append(req)
+		return jsonify(reqs), 200
 
 	return app
