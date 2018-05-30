@@ -25,7 +25,15 @@ def create_app(config_name):
 	]
 
 	# accounts list
-	accounts = []
+	accounts = [
+		{
+			"firstname": "Milly",
+			"lastname": "Kwamboka",
+			"email": "milly@gmail.com",
+			"password": 4747,
+			"confirm_password": 4747
+		}
+	]
 
 	@app.route("/users/api/v1.0/requests/", methods=["POST"])
 	def create_request():
@@ -64,5 +72,27 @@ def create_app(config_name):
 			return jsonify({
 				"message": "Your account was created successfully."
 			}), 201
+
+	@app.route("/users/api/v1.0/authenticate/", methods=["POST"])
+	def login_user():
+		if request.json:
+			user = {
+				"email": request.json.get('email', ''),
+				"password": request.json.get('password', '')
+			}
+			for account in accounts:
+				if account["email"] == user["email"]:
+					if account["password"] == user["password"]:
+						return jsonify({
+							"status": "Success",
+							"message": "Login was successfull",
+							"email": account["email"]
+						}), 200
+					return jsonify({
+						"message": "Invalid password"
+					}), 401
+			return jsonify({
+				"message": "Invalid credentials"
+			}), 401
 
 	return app
