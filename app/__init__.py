@@ -119,7 +119,7 @@ def create_app(config_name):
 				"message": "Invalid credentials"
 			}), 401
 
-	# get requests view for a user
+	# get all requests view
 	@app.route("/users/api/v1.0/requests/", methods=["GET"])
 	def get_requests():
 		name = request.headers["name"]
@@ -143,7 +143,7 @@ def create_app(config_name):
 			if name == "admin":
 				return jsonify(requests), 200
 
-	# get request view
+	# get a request view
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["GET"])
 	def get_request(id):
 		name = request.headers["name"]
