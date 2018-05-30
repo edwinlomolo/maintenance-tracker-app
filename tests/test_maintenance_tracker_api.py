@@ -35,8 +35,8 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		Test API can login user
 		"""
 		res = self.client().post("/users/api/v1.0/authenticate/", json=dict(
-			email="edwin@gmail.com",
-			password=1234
+			email="milly@gmail.com",
+			password=4747
 		))
 		self.assertEqual(res.status_code, 200)
 		self.assertTrue(str(res.data))
