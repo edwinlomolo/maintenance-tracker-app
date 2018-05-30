@@ -119,9 +119,9 @@ def create_app(config_name):
 				"message": "Invalid credentials"
 			}), 401
 
-	# get request view for a user
+	# get requests view for a user
 	@app.route("/users/api/v1.0/requests/", methods=["GET"])
-	def get_request():
+	def get_requests():
 		name = request.headers["name"]
 		reqs = []
 		for item in requests:
@@ -137,6 +137,27 @@ def create_app(config_name):
 					"created_by": item["created_by"]
 				}
 				reqs.append(req)
+		return jsonify(reqs), 200
+
+	# get request view for user
+	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["GET"])
+	def get_request(id):
+		name = request.headers["name"]
+		reqs = []
+		for item in requests:
+			if item["created_by"] == name:
+				if item["id"] == id:
+					req = {
+						"id": item["id"],
+						"title": item["title"],
+						"description": item["description"],
+						"location": item["location"],
+						"approved": item["approved"],
+						"rejected": item["rejected"],
+						"resolved": item["resolved"],
+						"created_by": item["created_by"]
+					}
+					reqs.append(req)
 		return jsonify(reqs), 200
 
 	return app
