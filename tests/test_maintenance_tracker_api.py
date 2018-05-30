@@ -70,11 +70,24 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		self.assertEqual(res.status_code, 200)
 		self.assertTrue(str(res.data))
 
+	def test_api_can_edit_a_request(self):
+		"""
+		Test API can edit a request
+		"""
+		res = self.client().post("/users/api/v1.0/requests/{}/".format(3), json=dict(
+			title="Broken window",
+			description="My children can't sleep due to coldness. I have a broken window pane",
+			location="Migori"
+		), 
+		headers=dict(name="Milly"))
+		self.assertEqual(res.status_code, 200)
+		self.assertTrue(str(res.data))
+
 	def test_api_can_return_all_requests_for_admin(self):
 		"""
-		Test API can return requests for admin
+		Test API can return all requests for admin
 		"""
-		res = self.client().get("/admin/api/v1.0/requests/", headers=dict(name="admin"))
+		res = self.client().get("/users/api/v1.0/requests/", headers=dict(name="admin"))
 		self.assertEqual(res.status_code, 200)
 		self.assertTrue(str(res.data))
 
@@ -82,7 +95,12 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		"""
 		Test API can allow request edit for admin
 		"""
-		res = self.client().post("/admin/api/v1.0/requests/{}/".format(1), headers=dict(name="admin"))
+		res = self.client().post("/users/api/v1.0/requests/{}/".format(1), 
+		json=dict(
+			approved=False,
+			rejected=True,
+			resolved=True
+		), headers=dict(name="admin"))
 		self.assertEqual(res.status_code, 200)
 		self.assertTrue(str(res.data))
 
