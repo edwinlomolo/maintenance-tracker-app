@@ -24,6 +24,9 @@ def create_app(config_name):
 		}
 	]
 
+	# accounts list
+	accounts = []
+
 	@app.route("/users/api/v1.0/requests/", methods=["POST"])
 	def create_request():
 		if request.json:
@@ -45,6 +48,21 @@ def create_app(config_name):
 				"rejected": req["rejected"],
 				"resolved": req["resolved"],
 				"created_by": req["created_by"]
+			}), 201
+
+	@app.route("/users/api/v1.0/account/register/", methods=["POST"])
+	def create_account():
+		if request.json:
+			user = {
+				"firstname": request.json.get('firstname', ''),
+				"lastname": request.json.get('lastname', ''),
+				"email": request.json.get('email', ''),
+				"password": request.json.get('password', ''),
+				"confirm_password": request.json.get('confirm_password', '')
+			}
+			accounts.append(user)
+			return jsonify({
+				"message": "Your account was created successfully."
 			}), 201
 
 	return app
