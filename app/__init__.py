@@ -124,22 +124,26 @@ def create_app(config_name):
 	def get_requests():
 		name = request.headers["name"]
 		reqs = []
-		for item in requests:
-			if item["created_by"] == name:
-				req = {
-					"id": item["id"],
-					"title": item["title"],
-					"description": item["description"],
-					"location": item["location"],
-					"approved": item["approved"],
-					"rejected": item["rejected"],
-					"resolved": item["resolved"],
-					"created_by": item["created_by"]
-				}
-				reqs.append(req)
-		return jsonify(reqs), 200
+		if name != "admin":
+			for item in requests:
+				if item["created_by"] == name:
+					req = {
+						"id": item["id"],
+						"title": item["title"],
+						"description": item["description"],
+						"location": item["location"],
+						"approved": item["approved"],
+						"rejected": item["rejected"],
+						"resolved": item["resolved"],
+						"created_by": item["created_by"]
+					}
+					reqs.append(req)
+			return jsonify(reqs), 200
+		else:
+			if name == "admin":
+				return jsonify(requests), 200
 
-	# get request view for user
+	# get request view
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["GET"])
 	def get_request(id):
 		name = request.headers["name"]
@@ -160,4 +164,37 @@ def create_app(config_name):
 					reqs.append(req)
 		return jsonify(reqs), 200
 
+	# update request view
+	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["POST"])
+	def update_request(id):
+		name = request.headers["name"]
+		if name != "admin":
+			for item in requests:
+				if item["created_by"] == name:
+					if item["id"] == id:
+						item["title"] = request.json.get('title'),
+						item["description"] = request.json.get('description'),
+						item['location'] = request.json.get('location')
+					return jsonify({
+						"id": item["id"],
+						"title": item["title"],
+						"description": item["description"],
+						"location": item["location"],
+						"approved": item["approved"],
+						"rejected": item["rejected"],
+						"resolved": item["resolved"],
+						"created_by": item["created_by"]
+					}), 200
+		else:
+			if name == "admin":
+				for item in requests:
+					if item["id"] == id:
+						item["approved"] = request.json.get('approved')
+						item["rejected"] = request.json.get('rejected')
+						item["resolved"] = request.json.get('resolved')
+
+				return jsonify({
+					"message": "Your request edit was successfull"
+				})
+			
 	return app
