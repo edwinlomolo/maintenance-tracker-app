@@ -35,6 +35,7 @@ def create_app(config_name):
 		}
 	]
 
+	# user post request route
 	@app.route("/users/api/v1.0/requests/", methods=["POST"])
 	def create_request():
 		if request.json:
@@ -58,6 +59,7 @@ def create_app(config_name):
 				"created_by": req["created_by"]
 			}), 201
 
+	# user account registration view
 	@app.route("/users/api/v1.0/account/register/", methods=["POST"])
 	def create_account():
 		if request.json:
@@ -73,6 +75,7 @@ def create_app(config_name):
 				"message": "Your account was created successfully."
 			}), 201
 
+	# user login view
 	@app.route("/users/api/v1.0/authenticate/", methods=["POST"])
 	def login_user():
 		if request.json:
