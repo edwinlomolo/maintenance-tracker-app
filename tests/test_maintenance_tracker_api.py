@@ -45,6 +45,14 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		self.assertEqual(res.status_code, 200)
 		self.assertTrue(str(res.data))
 
+	def test_api_can_return_all_requests_for_admin(self):
+		"""
+		Test API can return requests for admin
+		"""
+		res = self.client().get("/admin/api/v1.0/requests/")
+		self.assertEqual(res.status_code, 200)
+		self.assertTrue(str(res.data))
+
 
 if __name__ == '__main__':
 	unittest.main()
