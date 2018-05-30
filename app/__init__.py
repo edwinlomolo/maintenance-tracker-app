@@ -119,7 +119,7 @@ def create_app(config_name):
 				"message": "Invalid credentials"
 			}), 401
 
-	# get requests view for a user
+	# get all requests view
 	@app.route("/users/api/v1.0/requests/", methods=["GET"])
 	def get_requests():
 		name = request.headers["name"]
