@@ -28,13 +28,20 @@ class AdminTestCase(unittest.TestCase):
 		"""
 		res = self.client().post("/admin/api/v1.0/requests/{}/".format(1), 
 		json=dict(
-			approved=False,
-			rejected=True,
 			resolved=True
 		), headers=dict(role="admin"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
-		self.assertEqual(str(data["approved"]), "False")
+		self.assertEqual(str(data["resolved"]), True)
+
+	def test_api_can_return_single_request_for_admin(self):
+		"""
+		Test API can get a request for admin
+		"""
+		res = self.client().get("/admin/api/v1.0/requests/{}/".format(1))
+		self.assertEqual(res.status_code, 200)
+		data = json.loads(res.get_data(as_text=True))
+		self.assertEqual(int(data["id"]), 1)
 
 if __name__ == '__main__':
 	unittest.main()
