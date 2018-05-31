@@ -40,5 +40,29 @@ class UserTestCase(unittest.TestCase):
 		self.assertEqual(res.status_code, 200)
 		self.assertEqual(str(data["message"]), "Login was successfull")
 
+	def test_api_returns_error_for_wrong_password(self):
+		"""
+		Test API returns error for wrong password
+		"""
+		res = self.client().post("/users/api/v1.0/authenticate/", json=dict(
+			email="milly@gmail.com",
+			password=1234
+		))
+		data = json.loads(res.get_data(as_text=True))
+		self.assertEqual(res.status_code, 401)
+		self.assertEqual(str(res.data), "Invalid password")
+
+	def test_api_returns_error_for_unregistered_user(self):
+		"""
+		Test API returns error for unregistered user
+		"""
+		res = self.client().post("/users/api/v1.0/authenticate/", json=dict(
+			email="edwin@gmail.com",
+			password=3434
+		))
+		self.assertEqual(res.status_code, 404)
+		data = json.loads(res.get_data(as_text=True))
+		self.assertEqual(str(data["error"]), "Not Found")
+
 if __name__ == '__main__':
 	unittest.main()
