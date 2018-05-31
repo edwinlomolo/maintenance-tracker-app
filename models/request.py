@@ -12,3 +12,6 @@ class Request(object):
 		self.description = description,
 		self.location = location
 		self.created_by = created_by
+		self.approved = False
+		self.rejected = False
+		self.resolved = False
