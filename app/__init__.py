@@ -95,7 +95,7 @@ def create_app(config_name):
 	# get all requests view
 	@app.route("/users/api/v1.0/requests/", methods=["GET"])
 	def get_requests():
-		name = request.headers["Authorization"]
+		name = request.headers["role"]
 		reqs = []
 		if name != "admin":
 			for item in requests:
@@ -119,7 +119,7 @@ def create_app(config_name):
 	# get a request view
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["GET"])
 	def get_request(id):
-		name = request.headers["Authorization"]
+		name = request.headers["role"]
 		reqs = []
 		for item in requests:
 			if item["created_by"] == name:
@@ -140,7 +140,7 @@ def create_app(config_name):
 	# update request view
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["POST"])
 	def update_request(id):
-		name = request.headers["Authorization"]
+		name = request.headers["role"]
 		if name != "admin":
 			for item in requests:
 				if item["created_by"] == name:
