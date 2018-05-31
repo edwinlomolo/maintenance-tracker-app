@@ -45,13 +45,13 @@ def create_app(config_name):
 			requests.append(req)
 			return jsonify({
 				"id": req.id,
-				"title": req["title"],
-				"description": req["description"],
-				"location": req["location"],
-				"created_by": req["created_by"],
-				"approved": req["approved"],
-				"rejected": req["rejected"],
-				"resolved": req["resolved"]
+				"title": req.title,
+				"description": req.description,
+				"location": req.location,
+				"created_by": req.created_by,
+				"approved": req.approved,
+				"rejected": req.rejected,
+				"resolved": req.resolved
 			}), 201
 
 	# user account registration view
