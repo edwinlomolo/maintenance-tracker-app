@@ -113,8 +113,7 @@ def create_app(config_name):
 					reqs.append(req)
 			return jsonify(reqs), 200
 		else:
-			if name == "admin":
-				return jsonify(requests), 200
+			abort(404)
 
 	# get a request view
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["GET"])
@@ -169,5 +168,33 @@ def create_app(config_name):
 				return jsonify({
 					"message": "Your request edit was successfull"
 				})
-			
+
+	# get requests for admin
+	@app.route("/admin/api/v1.0/requests/", methods=["GET"])
+	def get_requests_for_admin():
+		role = str(request.headers["role"])
+		if role == "admin":
+			return jsonify(requests)
+
+	@app.route("/admin/api/v1.0/requests/<int:id>/", methods=["PUT"])
+	def update(id):
+		role = str(request.headers["role"])
+		if role == "admin":
+			if request.json:
+				for item in requests:
+					if item["id"] == id:
+						item["approved"] = request.json.get('approved')
+						item["rejected"] = request.json.get('rejected')
+						item["resolved"] = request.json.get('resolved')
+
+					return jsonify({
+						"id": item["id"],
+						"title": item["title"],
+						"description": item["description"],
+						"location": item["location"],
+						"approved": item["approved"],
+						"rejected": item["rejected"],
+						"resolved": item["resolved"]
+					})
+
 	return app
