@@ -100,23 +100,20 @@ def create_app(config_name):
 	def get_requests():
 		name = request.headers["role"]
 		reqs = []
-		if name != "admin":
-			for item in requests:
-				if item["created_by"] == name:
-					req = {
-						"id": item["id"],
-						"title": item["title"],
-						"description": item["description"],
-						"location": item["location"],
-						"approved": item["approved"],
-						"rejected": item["rejected"],
-						"resolved": item["resolved"],
-						"created_by": item["created_by"]
-					}
-					reqs.append(req)
-			return jsonify(reqs), 200
-		else:
-			abort(404)
+		for item in requests:
+			if item["created_by"] == name:
+				req = {
+					"id": item["id"],
+					"title": item["title"],
+					"description": item["description"],
+					"location": item["location"],
+					"approved": item["approved"],
+					"rejected": item["rejected"],
+					"resolved": item["resolved"],
+					"created_by": item["created_by"]
+				}
+				reqs.append(req)
+		return jsonify(reqs), 200
 
 	# get a request view
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["GET"])
@@ -166,7 +163,7 @@ def create_app(config_name):
 	def get_requests_for_admin():
 		role = str(request.headers["role"])
 		if role == "admin":
-			return jsonify(requests)
+			return jsonify(requests), 200
 
 	# put request for admin
 	@app.route("/admin/api/v1.0/requests/<int:id>/", methods=["PUT"])
@@ -186,7 +183,7 @@ def create_app(config_name):
 			"approved": req[0]["approved"],
 			"rejected": req[0]["rejected"],
 			"resolved": req[0]["resolved"]
-		})
+		}), 200
 
 	# get request for admin
 	@app.route("/admin/api/v1.0/requests/<int:id>/", methods=["GET"])
@@ -196,6 +193,7 @@ def create_app(config_name):
 			abort(404)
 		if role == "admin":
 			req = [item for item in requests if item["id"] == id]
+
 			return jsonify({
 				"id": req[0]["id"],
 				"title": req[0]["title"],
@@ -204,7 +202,7 @@ def create_app(config_name):
 				"approved": req[0]["approved"],
 				"rejected": req[0]["rejected"],
 				"resolved": req[0]["resolved"]
-			})
+			}), 200
 
 	@app.errorhandler(404)
 	def not_found(error):
