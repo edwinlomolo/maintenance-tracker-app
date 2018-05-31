@@ -91,9 +91,7 @@ def create_app(config_name):
 					return jsonify({
 						"message": "Invalid password"
 					}), 401
-			return jsonify({
-				"message": "Invalid credentials"
-			}), 401
+			abort(404)
 
 	# get all requests view
 	@app.route("/users/api/v1.0/requests/", methods=["GET"])
