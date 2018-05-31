@@ -44,7 +44,7 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		"""
 		Test API can return a request created by a user
 		"""
-		res = self.client().get("/users/api/v1.0/requests/{}/".format(2), headers=dict(role="Edwin"))
+		res = self.client().get("/users/api/v1.0/requests/{}/".format(1), headers=dict(role="Edwin"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
 		assert(len(str(data)) > 0)
