@@ -1,5 +1,5 @@
 # import Flask module
-from flask import Flask, abort, jsonify, request
+from flask import Flask, abort, jsonify, request, make_response
 
 # import configurations variables
 from instance.config import app_config
@@ -20,7 +20,10 @@ def create_app(config_name):
 			"title": "Bad weather road",
 			"description": "Too many potholes. Gets muddy when it rains",
 			"location": "Kitui",
-			"created_by": "Mike"
+			"created_by": "Mike",
+			"approved": False,
+			"rejected": True,
+			"resolved": True
 		}
 	]
 	accounts = [
@@ -176,25 +179,46 @@ def create_app(config_name):
 		if role == "admin":
 			return jsonify(requests)
 
+	# put request for admin
 	@app.route("/admin/api/v1.0/requests/<int:id>/", methods=["PUT"])
 	def update(id):
 		role = str(request.headers["role"])
-		if role == "admin":
-			if request.json:
-				for item in requests:
-					if item["id"] == id:
-						item["approved"] = request.json.get('approved')
-						item["rejected"] = request.json.get('rejected')
-						item["resolved"] = request.json.get('resolved')
+		req = [item for item in requests if item["id"] == id]
 
-					return jsonify({
-						"id": item["id"],
-						"title": item["title"],
-						"description": item["description"],
-						"location": item["location"],
-						"approved": item["approved"],
-						"rejected": item["rejected"],
-						"resolved": item["resolved"]
-					})
+		req[0]["approved"] = request.json.get('approved', req[0]["approved"])
+		req[0]["rejected"] = request.json.get('rejected', req[0]["rejected"])
+		req[0]["resolved"] = request.json.get('resolved', req[0]["resolved"])
+
+		return jsonify({
+			"id": req[0]["id"],
+			"title": req[0]["title"],
+			"description": req[0]["description"],
+			"location": req[0]["location"],
+			"approved": req[0]["approved"],
+			"rejected": req[0]["rejected"],
+			"resolved": req[0]["resolved"]
+		})
+
+	# get request for admin
+	@app.route("/admin/api/v1.0/requests/<int:id>/", methods=["GET"])
+	def get_single_request(id):
+		role = request.headers["role"]
+		if id > len(requests):
+			abort(404)
+		if role == "admin":
+			req = [item for item in requests if item["id"] == id]
+			return jsonify({
+				"id": req[0]["id"],
+				"title": req[0]["title"],
+				"description": req[0]["description"],
+				"location": req[0]["location"],
+				"approved": req[0]["approved"],
+				"rejected": req[0]["rejected"],
+				"resolved": req[0]["resolved"]
+			})
+
+	@app.errorhandler(404)
+	def not_found(error):
+		return make_response(jsonify({ "error": "Not Found"})), 404
 
 	return app
