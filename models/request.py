@@ -7,7 +7,7 @@ class Request(object):
 	"""
 
 	def __init__(self, id, title, description, location, created_by):
-		self.id = id
+		self.id = 0
 		self.title = title
 		self.description = description,
 		self.location = location
