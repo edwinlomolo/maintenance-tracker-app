@@ -11,73 +11,31 @@ def create_app(config_name):
 	app.config.from_pyfile("config.py")
 
 	# requests list
-	requests = [
-		{
-			"id": 1,
-			"title": "Leaking pipe",
-			"description": "I have a busted water pipe in my bathroom. Its has been leaking for a week",
-			"location": "Kisumu",
-			"approved": False,
-			"rejected": False,
-			"resolved": False,
-			"created_by": "Edwin"
-		},
-		{
-			"id": 2,
-			"title": "Security",
-			"description": "Crime rate has increased due to tampered security lights.",
-			"location": "Bungoma",
-			"approved": False,
-			"rejected": False,
-			"resolved": False,
-			"created_by": "Edwin"
-		},
-		{
-			"id": 3,
-			"title": "Air pollution",
-			"description": "We have a bad smell in the middle of the town coming from garbage collection tanker.",
-			"location": "Dandora",
-			"approved": False,
-			"rejected": False,
-			"resolved": False,
-			"created_by": "Milly"
-		}
-	]
+	requests = []
 
 	# accounts list
-	accounts = [
-		{
-			"firstname": "Milly",
-			"lastname": "Kwamboka",
-			"email": "milly@gmail.com",
-			"password": 4747,
-			"confirm_password": 4747
-		}
-	]
+	accounts = []
 
 	# user post request route
 	@app.route("/users/api/v1.0/requests/", methods=["POST"])
 	def create_request():
+		id = requests[-1]["id"] + 1
+		title = request.json.get('title')
+		description = request.json.get('description')
+		location = request.json.get('location')
+		created_by = request.json.get('created_by')
 		if request.json:
-			req = {
-				"id": requests[-1]["id"] + 1,
-				"title": request.json.get('title', ''),
-				"description": request.json.get('description', ''),
-				"location": request.json.get('location', ''),
-				"approved": False,
-				"rejected": False,
-				"resolved": False,
-				"created_by": request.json.get('created_by', '')
-			}
+			req = Request(id=id, title=title, description=description, location=location, created_by=created_by)
 			requests.append(req)
 			return jsonify({
 				"id": req["id"],
+				"title": req["title"],
 				"description": req["description"],
 				"location": req["location"],
+				"created_by": req["created_by"],
 				"approved": req["approved"],
 				"rejected": req["rejected"],
-				"resolved": req["resolved"],
-				"created_by": req["created_by"]
+				"resolved": req["resolved"]
 			}), 201
 
 	# user account registration view
