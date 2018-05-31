@@ -6,19 +6,9 @@ from instance.config import app_config
 
 # define create_app to create and return Flask app
 def create_app(config_name):
-
-	from models.user import User
-	from models.request import Request
-
 	app = Flask(__name__, instance_relative_config=True)
 	app.config.from_object(app_config[config_name])
 	app.config.from_pyfile("config.py")
-
-	# requests list
-	requests = []
-
-	# accounts list
-	accounts = []
 
 	# user post request route
 	@app.route("/users/api/v1.0/requests/", methods=["POST"])
