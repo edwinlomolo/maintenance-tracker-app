@@ -6,15 +6,13 @@ from instance.config import app_config
 
 # define create_app to create and return Flask app
 def create_app(config_name):
+
+	from models.user import User
+	from models.request import Request
+
 	app = Flask(__name__, instance_relative_config=True)
 	app.config.from_object(app_config[config_name])
 	app.config.from_pyfile("config.py")
-
-	# requests list
-	requests = []
-
-	# accounts list
-	accounts = []
 
 	# user post request route
 	@app.route("/users/api/v1.0/requests/", methods=["POST"])
@@ -26,7 +24,7 @@ def create_app(config_name):
 		created_by = request.json.get('created_by')
 		if request.json:
 			req = Request(id=id, title=title, description=description, location=location, created_by=created_by)
-			requests.append(req)
+			req.save()
 			return jsonify({
 				"id": req["id"],
 				"title": req["title"],
@@ -42,14 +40,14 @@ def create_app(config_name):
 	@app.route("/users/api/v1.0/account/register/", methods=["POST"])
 	def create_account():
 		if request.json:
-			user = {
-				"firstname": request.json.get('firstname', ''),
-				"lastname": request.json.get('lastname', ''),
-				"email": request.json.get('email', ''),
-				"password": request.json.get('password', ''),
-				"confirm_password": request.json.get('confirm_password', '')
-			}
-			accounts.append(user)
+
+			firstname = request.json.get('firstname')
+			lastname = request.json.get('lastname')
+			email = request.json.get('email')
+			password = request.json.get('password')
+
+			user = User()
+			user.save()
 			return jsonify({
 				"message": "Your account was created successfully."
 			}), 201
