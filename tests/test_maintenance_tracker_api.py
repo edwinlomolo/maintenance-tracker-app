@@ -62,7 +62,7 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		"""
 		Test API can return all requests created by a user
 		"""
-		res = self.client().get("/users/api/v1.0/requests/", headers=dict(name="Edwin"))
+		res = self.client().get("/users/api/v1.0/requests/", headers=dict(Authorization="Edwin"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
 		assert(isinstance(str(data), list))
@@ -71,7 +71,7 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		"""
 		Test API can return a request created by a user
 		"""
-		res = self.client().get("/users/api/v1.0/requests/{}/".format(2), headers=dict(name="Edwin"))
+		res = self.client().get("/users/api/v1.0/requests/{}/".format(2), headers=dict(Authorization="Edwin"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
 		assert(str(data["id"]) == 2)
@@ -85,7 +85,7 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 			description="My children can't sleep due to coldness. I have a broken window pane",
 			location="Migori"
 		), 
-		headers=dict(name="Milly"))
+		headers=dict(Authorization="Milly"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
 		self.assertEqual(str(data["location"]), "Migori")
@@ -94,7 +94,7 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		"""
 		Test API can return all requests for admin
 		"""
-		res = self.client().get("/users/api/v1.0/requests/", headers=dict(name="admin"))
+		res = self.client().get("/users/api/v1.0/requests/", headers=dict(Authorization="admin"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
 		assert(len(str(data)) > 0)
@@ -108,7 +108,7 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 			approved=False,
 			rejected=True,
 			resolved=True
-		), headers=dict(name="admin"))
+		), headers=dict(Authorization="admin"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
 		self.assertEqual(str(data["approved"]), "False")
