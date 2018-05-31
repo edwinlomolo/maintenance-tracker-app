@@ -14,6 +14,9 @@ def create_app(config_name):
 	app.config.from_object(app_config[config_name])
 	app.config.from_pyfile("config.py")
 
+	requests = []
+	accounts = []
+
 	# user post request route
 	@app.route("/users/api/v1.0/requests/", methods=["POST"])
 	def create_request():
@@ -24,7 +27,7 @@ def create_app(config_name):
 		created_by = request.json.get('created_by')
 		if request.json:
 			req = Request(id=id, title=title, description=description, location=location, created_by=created_by)
-			req.save()
+			requests.append(req)
 			return jsonify({
 				"id": req["id"],
 				"title": req["title"],
@@ -46,8 +49,8 @@ def create_app(config_name):
 			email = request.json.get('email')
 			password = request.json.get('password')
 
-			user = User()
-			user.save()
+			user = User(firstname=firstname, lastname=lastname, email=email, password=password)
+			accounts.append(user)
 			return jsonify({
 				"message": "Your account was created successfully."
 			}), 201
@@ -56,13 +59,12 @@ def create_app(config_name):
 	@app.route("/users/api/v1.0/authenticate/", methods=["POST"])
 	def login_user():
 		if request.json:
-			user = {
-				"email": request.json.get('email', ''),
-				"password": request.json.get('password', '')
-			}
+			email = request.json.get('email')
+			password = request.json.get('password')
+
 			for account in accounts:
-				if account["email"] == user["email"]:
-					if account["password"] == user["password"]:
+				if account["email"] == email:
+					if account["password"] == password:
 						return jsonify({
 							"status": "Success",
 							"message": "Login was successfull",
@@ -78,7 +80,7 @@ def create_app(config_name):
 	# get all requests view
 	@app.route("/users/api/v1.0/requests/", methods=["GET"])
 	def get_requests():
-		name = request.headers["name"]
+		name = request.headers["Authorization"]
 		reqs = []
 		if name != "admin":
 			for item in requests:
@@ -102,7 +104,7 @@ def create_app(config_name):
 	# get a request view
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["GET"])
 	def get_request(id):
-		name = request.headers["name"]
+		name = request.headers["Authorization"]
 		reqs = []
 		for item in requests:
 			if item["created_by"] == name:
@@ -123,7 +125,7 @@ def create_app(config_name):
 	# update request view
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["POST"])
 	def update_request(id):
-		name = request.headers["name"]
+		name = request.headers["Authorization"]
 		if name != "admin":
 			for item in requests:
 				if item["created_by"] == name:
