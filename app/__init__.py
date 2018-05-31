@@ -135,7 +135,7 @@ def create_app(config_name):
 		return jsonify(reqs), 200
 
 	# update request view
-	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["PUT"])
+	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["POST"])
 	def update_request(id):
 		if request.json:
 			req = [item for item in requests if item["id"] == id]
@@ -164,7 +164,7 @@ def create_app(config_name):
 			return jsonify(requests), 200
 
 	# put request for admin
-	@app.route("/admin/api/v1.0/requests/<int:id>/", methods=["PUT"])
+	@app.route("/admin/api/v1.0/requests/<int:id>/", methods=["POST"])
 	def update(id):
 		role = str(request.headers["role"])
 		if role == "admin":
