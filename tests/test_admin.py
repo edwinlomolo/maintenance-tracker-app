@@ -32,7 +32,7 @@ class AdminTestCase(unittest.TestCase):
 		), headers=dict(role="admin"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
-		self.assertEqual(str(data["resolved"]), True)
+		self.assertEqual(data["resolved"], True)
 
 	def test_api_can_return_single_request_for_admin(self):
 		"""
