@@ -3,6 +3,7 @@ Test class for our Maintenance Tracker API endpoints
 """
 import os
 import unittest
+import json
 from app import create_app
 
 class MaintenanceTrackerTestCase(unittest.TestCase):
@@ -27,8 +28,9 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 			password=1234,
 			confirm_password=1234
 		))
+		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 201)
-		self.assertTrue(str(res.data))
+		self.assertEqual(str(data["message"]), "Your account was created successfully.")
 
 	def test_api_can_log_in_user(self):
 		"""
@@ -38,8 +40,9 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 			email="milly@gmail.com",
 			password=4747
 		))
+		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
-		self.assertTrue(str(res.data))
+		self.assertEqual(str(data["message"]), "Login was successfull")
 
 	def test_api_can_create_a_request(self):
 		"""
@@ -51,24 +54,27 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 			location="Kisumu",
 			create_by="Mike"
 		))
+		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 201)
-		self.assertTrue(res.data)
+		self.assertIn("title", str(data))
 
 	def test_api_can_return_all_requests(self):
 		"""
 		Test API can return all requests created by a user
 		"""
 		res = self.client().get("/users/api/v1.0/requests/", headers=dict(name="Edwin"))
+		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
-		self.assertTrue(str(res.data))
+		assert(len(str(data)) > 0)
 
-	def test_api_can_return_a_request_create_by_a_user(self):
+	def test_api_can_return_a_request_created_by_a_user(self):
 		"""
 		Test API can return a request created by a user
 		"""
 		res = self.client().get("/users/api/v1.0/requests/{}/".format(2), headers=dict(name="Edwin"))
+		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
-		self.assertTrue(str(res.data))
+		assert(len(str(data)) > 0)
 
 	def test_api_can_edit_a_request(self):
 		"""
@@ -80,16 +86,18 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 			location="Migori"
 		), 
 		headers=dict(name="Milly"))
+		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
-		self.assertTrue(str(res.data))
+		self.assertEqual(str(data["location"]), "Migori")
 
 	def test_api_can_return_all_requests_for_admin(self):
 		"""
 		Test API can return all requests for admin
 		"""
 		res = self.client().get("/users/api/v1.0/requests/", headers=dict(name="admin"))
+		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
-		self.assertTrue(str(res.data))
+		assert(len(str(data)) > 0)
 
 	def test_api_can_edit_a_request_for_admin(self):
 		"""
@@ -101,8 +109,9 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 			rejected=True,
 			resolved=True
 		), headers=dict(name="admin"))
+		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
-		self.assertTrue(str(res.data))
+		self.assertEqual(str(data["message"]), "Your request edit was successfull")
 
 
 if __name__ == '__main__':

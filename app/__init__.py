@@ -72,6 +72,7 @@ def create_app(config_name):
 			requests.append(req)
 			return jsonify({
 				"id": req["id"],
+				"title": req["title"],
 				"description": req["description"],
 				"location": req["location"],
 				"approved": req["approved"],
