@@ -38,7 +38,7 @@ class AdminTestCase(unittest.TestCase):
 		"""
 		Test API can get a request for admin
 		"""
-		res = self.client().get("/admin/api/v1.0/requests/{}/".format(1))
+		res = self.client().get("/admin/api/v1.0/requests/{}/".format(1), headers=dict(role="admin"))
 		self.assertEqual(res.status_code, 200)
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(int(data["id"]), 1)
