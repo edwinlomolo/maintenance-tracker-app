@@ -6,54 +6,19 @@ from instance.config import app_config
 
 # define create_app to create and return Flask app
 def create_app(config_name):
+
+	from models.user import User
+	from models.request import Request
+
 	app = Flask(__name__, instance_relative_config=True)
 	app.config.from_object(app_config[config_name])
 	app.config.from_pyfile("config.py")
 
 	# requests list
-	requests = [
-		{
-			"id": 1,
-			"title": "Leaking pipe",
-			"description": "I have a busted water pipe in my bathroom. Its has been leaking for a week",
-			"location": "Kisumu",
-			"approved": False,
-			"rejected": False,
-			"resolved": False,
-			"created_by": "Edwin"
-		},
-		{
-			"id": 2,
-			"title": "Security",
-			"description": "Crime rate has increased due to tampered security lights.",
-			"location": "Bungoma",
-			"approved": False,
-			"rejected": False,
-			"resolved": False,
-			"created_by": "Edwin"
-		},
-		{
-			"id": 3,
-			"title": "Air pollution",
-			"description": "We have a bad smell in the middle of the town coming from garbage collection tanker.",
-			"location": "Dandora",
-			"approved": False,
-			"rejected": False,
-			"resolved": False,
-			"created_by": "Milly"
-		}
-	]
+	requests = []
 
 	# accounts list
-	accounts = [
-		{
-			"firstname": "Milly",
-			"lastname": "Kwamboka",
-			"email": "milly@gmail.com",
-			"password": 4747,
-			"confirm_password": 4747
-		}
-	]
+	accounts = []
 
 	# user post request route
 	@app.route("/users/api/v1.0/requests/", methods=["POST"])
