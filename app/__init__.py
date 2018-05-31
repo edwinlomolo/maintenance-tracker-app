@@ -38,7 +38,7 @@ def create_app(config_name):
 	# user post request route
 	@app.route("/users/api/v1.0/requests/", methods=["POST"])
 	def create_request():
-		id = requests[-1]["id"] + 1
+		id = request.json.get('id')
 		title = request.json.get('title')
 		description = request.json.get('description')
 		location = request.json.get('location')
@@ -56,6 +56,8 @@ def create_app(config_name):
 				"rejected": req.rejected,
 				"resolved": req.resolved
 			}), 201
+		else:
+			abort(400)
 
 	# user account registration view
 	@app.route("/users/api/v1.0/account/register/", methods=["POST"])
@@ -72,6 +74,8 @@ def create_app(config_name):
 			return jsonify({
 				"message": "Your account was created successfully."
 			}), 201
+		else:
+			abort(400)
 
 	# user login view
 	@app.route("/users/api/v1.0/authenticate/", methods=["POST"])
@@ -88,9 +92,7 @@ def create_app(config_name):
 							"message": "Login was successfull",
 							"email": account["email"]
 						}), 200
-					return jsonify({
-						"message": "Invalid password"
-					}), 401
+					abort(401)
 			abort(404)
 
 	# get all requests view
@@ -98,29 +100,9 @@ def create_app(config_name):
 	def get_requests():
 		name = request.headers["role"]
 		reqs = []
-		for item in requests:
-			if item["created_by"] == name:
-				req = {
-					"id": item["id"],
-					"title": item["title"],
-					"description": item["description"],
-					"location": item["location"],
-					"approved": item["approved"],
-					"rejected": item["rejected"],
-					"resolved": item["resolved"],
-					"created_by": item["created_by"]
-				}
-				reqs.append(req)
-		return jsonify(reqs), 200
-
-	# get a request view
-	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["GET"])
-	def get_request(id):
-		name = request.headers["role"]
-		reqs = []
-		for item in requests:
-			if item["created_by"] == name:
-				if item["id"] == id:
+		if name:
+			for item in requests:
+				if item["created_by"] == name:
 					req = {
 						"id": item["id"],
 						"title": item["title"],
@@ -132,7 +114,37 @@ def create_app(config_name):
 						"created_by": item["created_by"]
 					}
 					reqs.append(req)
-		return jsonify(reqs), 200
+			return jsonify(reqs), 200
+		else:
+			abort(401)
+
+	# get a request view
+	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["GET"])
+	def get_request(id):
+		name = request.headers["role"]
+		reqs = []
+		if name:
+			for item in requests:
+				if item["created_by"] == name:
+					if item["id"] == id:
+						req = {
+							"id": item["id"],
+							"title": item["title"],
+							"description": item["description"],
+							"location": item["location"],
+							"approved": item["approved"],
+							"rejected": item["rejected"],
+							"resolved": item["resolved"],
+							"created_by": item["created_by"]
+						}
+						reqs.append(req)
+					else:
+						abort(404)
+				else:
+					abort(404)
+			return jsonify(reqs), 200
+		else:
+			abort(401)
 
 	# update request view
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["POST"])
@@ -205,8 +217,19 @@ def create_app(config_name):
 				"resolved": req[0]["resolved"]
 			}), 200
 
+	# 400 error handler
+	@app.errorhandler(400)
+	def bad_request(error):
+		return make_response(jsonify({"error": "Bad request"}))
+
+	# 401 error handler
+	@app.errorhandler(401)
+	def unauthorized(error):
+		return make_response(jsonify({"error": "Unauthorized"}))
+
+	# 404 error handler
 	@app.errorhandler(404)
 	def not_found(error):
-		return make_response(jsonify({ "error": "Not Found"})), 404
+		return make_response(jsonify({"error": "Not Found"})), 404
 
 	return app
