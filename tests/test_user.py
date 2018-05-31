@@ -50,7 +50,7 @@ class UserTestCase(unittest.TestCase):
 		))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 401)
-		self.assertEqual(str(res.data), "Invalid password")
+		self.assertEqual(str(res.data["message"]), "Invalid password")
 
 	def test_api_returns_error_for_unregistered_user(self):
 		"""

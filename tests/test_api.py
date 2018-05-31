@@ -58,7 +58,7 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 			description="I have a busted pipe. Its leaking so bad.",
 			location="Karen"
 		), 
-		headers=dict(role="Milly"))
+		headers=dict(role="Mike"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
 		self.assertEqual(str(data["location"]), "Karen")
