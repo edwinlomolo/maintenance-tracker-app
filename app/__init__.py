@@ -140,37 +140,26 @@ def create_app(config_name):
 		return jsonify(reqs), 200
 
 	# update request view
-	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["POST"])
+	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["PUT"])
 	def update_request(id):
-		name = request.headers["role"]
-		if name != "admin":
-			for item in requests:
-				if item["created_by"] == name:
-					if item["id"] == id:
-						item["title"] = request.json.get('title'),
-						item["description"] = request.json.get('description'),
-						item['location'] = request.json.get('location')
-					return jsonify({
-						"id": item["id"],
-						"title": item["title"],
-						"description": item["description"],
-						"location": item["location"],
-						"approved": item["approved"],
-						"rejected": item["rejected"],
-						"resolved": item["resolved"],
-						"created_by": item["created_by"]
-					}), 200
-		else:
-			if name == "admin":
-				for item in requests:
-					if item["id"] == id:
-						item["approved"] = request.json.get('approved')
-						item["rejected"] = request.json.get('rejected')
-						item["resolved"] = request.json.get('resolved')
+		if request.json:
+			req = [item for item in requests if item["id"] == id]
 
-				return jsonify({
-					"message": "Your request edit was successfull"
-				})
+			req[0]["title"] = request.json.get('title', req[0]["title"])
+			req[0]["description"] = request.json.get('description', req[0]["description"])
+			req[0]["location"] = request.json.get('location', req[0]["location"])
+			req[0]["created_by"] = request.json.get('created_by', req[0]["created_by"])
+
+			return jsonify({
+				"id": req[0]["id"],
+				"title": req[0]["title"],
+				"description": req[0]["description"],
+				"location": req[0]['location'],
+				"created_by": req[0]["created_by"],
+				"approved": req[0]["approved"],
+				"rejected": req[0]["rejected"],
+				"resolved": req[0]["resolved"]
+			}), 200
 
 	# get requests for admin
 	@app.route("/admin/api/v1.0/requests/", methods=["GET"])
