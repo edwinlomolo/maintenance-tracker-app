@@ -167,21 +167,24 @@ def create_app(config_name):
 	@app.route("/admin/api/v1.0/requests/<int:id>/", methods=["PUT"])
 	def update(id):
 		role = str(request.headers["role"])
-		req = [item for item in requests if item["id"] == id]
+		if role == "admin":
+			req = [item for item in requests if item["id"] == id]
 
-		req[0]["approved"] = request.json.get('approved', req[0]["approved"])
-		req[0]["rejected"] = request.json.get('rejected', req[0]["rejected"])
-		req[0]["resolved"] = request.json.get('resolved', req[0]["resolved"])
+			req[0]["approved"] = request.json.get('approved', req[0]["approved"])
+			req[0]["rejected"] = request.json.get('rejected', req[0]["rejected"])
+			req[0]["resolved"] = request.json.get('resolved', req[0]["resolved"])
 
-		return jsonify({
-			"id": req[0]["id"],
-			"title": req[0]["title"],
-			"description": req[0]["description"],
-			"location": req[0]["location"],
-			"approved": req[0]["approved"],
-			"rejected": req[0]["rejected"],
-			"resolved": req[0]["resolved"]
-		}), 200
+			return jsonify({
+				"id": req[0]["id"],
+				"title": req[0]["title"],
+				"description": req[0]["description"],
+				"location": req[0]["location"],
+				"approved": req[0]["approved"],
+				"rejected": req[0]["rejected"],
+				"resolved": req[0]["resolved"]
+			}), 200
+		else:
+			abort(404)
 
 	# get request for admin
 	@app.route("/admin/api/v1.0/requests/<int:id>/", methods=["GET"])
