@@ -44,7 +44,7 @@ def create_app(config_name):
 			req = Request(id=id, title=title, description=description, location=location, created_by=created_by)
 			requests.append(req)
 			return jsonify({
-				"id": req["id"],
+				"id": req.id,
 				"title": req["title"],
 				"description": req["description"],
 				"location": req["location"],
