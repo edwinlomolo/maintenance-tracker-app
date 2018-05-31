@@ -13,6 +13,10 @@ def create_app(config_name):
 	app = Flask(__name__, instance_relative_config=True)
 	app.config.from_object(app_config[config_name])
 	app.config.from_pyfile("config.py")
+
+	requests = []
+	accounts = []
+	
 	# user post request route
 	@app.route("/users/api/v1.0/requests/", methods=["POST"])
 	def create_request():
