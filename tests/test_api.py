@@ -35,7 +35,7 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		"""
 		Test API can return all requests created by a user
 		"""
-		res = self.client().get("/users/api/v1.0/requests/", headers=dict(Authorization="Edwin"))
+		res = self.client().get("/users/api/v1.0/requests/", headers=dict(role="Edwin"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
 		assert(len(str(data)) > 0)
@@ -44,7 +44,7 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		"""
 		Test API can return a request created by a user
 		"""
-		res = self.client().get("/users/api/v1.0/requests/{}/".format(2), headers=dict(Authorization="Edwin"))
+		res = self.client().get("/users/api/v1.0/requests/{}/".format(2), headers=dict(role="Edwin"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
 		assert(len(str(data)) > 0)
@@ -58,7 +58,7 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 			description="My children can't sleep due to coldness. I have a broken window pane",
 			location="Migori"
 		), 
-		headers=dict(Authorization="Milly"))
+		headers=dict(role="Milly"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
 		self.assertEqual(str(data["location"]), "Migori")

@@ -17,7 +17,7 @@ class AdminTestCase(unittest.TestCase):
 		"""
 		Test API can return all requests for admin
 		"""
-		res = self.client().get("/admin/api/v1.0/requests/", headers=dict(Authorization="admin"))
+		res = self.client().get("/admin/api/v1.0/requests/", headers=dict(role="admin"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
 		assert(len(str(data)) > 0)
@@ -31,7 +31,7 @@ class AdminTestCase(unittest.TestCase):
 			approved=False,
 			rejected=True,
 			resolved=True
-		), headers=dict(Authorization="admin"))
+		), headers=dict(role="admin"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
 		self.assertEqual(str(data["approved"]), "False")
