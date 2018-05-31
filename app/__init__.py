@@ -14,8 +14,23 @@ def create_app(config_name):
 	app.config.from_object(app_config[config_name])
 	app.config.from_pyfile("config.py")
 
-	requests = []
-	accounts = []
+	requests = [
+		{
+			"id": 1,
+			"title": "Bad weather road",
+			"description": "Too many potholes. Gets muddy when it rains",
+			"location": "Kitui",
+			"created_by": "Mike"
+		}
+	]
+	accounts = [
+		{
+			"firstname": "Milly",
+			"lastname": "Doe",
+			"email": "milly@gmail.com",
+			"password": 4747
+		}
+	]
 	
 	# user post request route
 	@app.route("/users/api/v1.0/requests/", methods=["POST"])
