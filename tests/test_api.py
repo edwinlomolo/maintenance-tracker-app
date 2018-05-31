@@ -53,15 +53,15 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		"""
 		Test API can edit a request
 		"""
-		res = self.client().post("/users/api/v1.0/requests/{}/".format(3), json=dict(
-			title="Broken window",
-			description="My children can't sleep due to coldness. I have a broken window pane",
-			location="Migori"
+		res = self.client().post("/users/api/v1.0/requests/{}/".format(1), json=dict(
+			title="Leakage",
+			description="I have a busted pipe. Its leaking so bad.",
+			location="Karen"
 		), 
 		headers=dict(role="Milly"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
-		self.assertEqual(str(data["location"]), "Migori")
+		self.assertEqual(str(data["location"]), "Karen")
 
 if __name__ == '__main__':
 	unittest.main()
