@@ -17,6 +17,15 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		self.app = create_app(config_name="testing")
 		self.client = self.app.test_client
 
+	def test_api_return_message_for_home_view(self):
+		"""
+		Test API can return message for home endpoint
+		"""
+		res = self.client().get("/")
+		data = json.loads(res.get_data(as_text=True))
+		self.assertEqual(res.status_code, 200)
+		self.assertEqual(str(data["message"]), "Welcome to Maintenance Tracker API")
+
 	def test_api_can_create_a_request(self):
 		"""
 		Test API can create a request
