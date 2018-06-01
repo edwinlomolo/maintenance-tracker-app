@@ -163,6 +163,8 @@ def create_app(config_name):
 					}
 					req_list.append(req)
 					return jsonify(req_list), 200
+				else:
+					abort(404)
 
 	# update request view
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["POST"])
