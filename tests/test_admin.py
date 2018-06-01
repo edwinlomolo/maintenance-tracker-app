@@ -43,5 +43,14 @@ class AdminTestCase(unittest.TestCase):
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(int(data["id"]), 1)
 
+	def test_api_can_return_error_for_unauthorized_request(self):
+		"""
+		Test API can return error for unauthorized request
+		"""
+		res = self.client().get("/admin/api/v1.0/requests/", headers=dict(role="Mike"))
+		data = json.loads(res.get_data(as_text=True))
+		self.assertEqual(res.status_code, 401)
+		self.assertEqual(str(data["error"]), "Unauthorized")
+
 if __name__ == '__main__':
 	unittest.main()
