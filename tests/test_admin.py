@@ -67,6 +67,15 @@ class AdminTestCase(unittest.TestCase):
         data = json.loads(res.get_data(as_text=True))
         self.assertEqual(int(data["id"]), 1)
 
+    def test_api_can_return_error_for_unauthorized(self):
+        """
+        Test API can return error unauthorized get a request
+        """
+        res = self.client().get("/admin/api/v1.0/requests/{}/".format(1), headers=dict(role="Mike"))
+        data = json.loads(res.get_data(as_text=True))
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(str(data["error"]), "Unauthorized")
+
     def test_api_can_return_error_for_unauthorized_request(self):
         """
         Test API can return error for unauthorized request
@@ -75,6 +84,27 @@ class AdminTestCase(unittest.TestCase):
         data = json.loads(res.get_data(as_text=True))
         self.assertEqual(res.status_code, 401)
         self.assertEqual(str(data["error"]), "Unauthorized")
+
+    def test_api_can_authenticate(self):
+        """
+        Test API can return error for unathorized access
+        """
+        res = self.client().post("/admin/api/v1.0/requests/{}/".format(1), 
+            json=dict(rejected=True),
+            headers=dict(role="Mike"))
+        data = json.loads(res.get_data(as_text=True))
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(str(data["error"]), "Unauthorized")
+
+    def test_api_can_handle_edge_case(self):
+        """
+        Test API can handle edge case for post
+        """
+        res = self.client().post("/admin/api/v1.0/requests/{}/".format(4), 
+            headers=dict(role="admin"))
+        data = json.loads(res.get_data(as_text=True))
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(str(data["error"]), "Not Found")
 
 if __name__ == '__main__':
    unittest.main()
