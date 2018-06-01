@@ -46,12 +46,14 @@ def create_app(config_name):
     """
     @app.route("/users/api/v1.0/requests/", methods=["POST"])
     def create_request():
-        id = request.json.get('id')
-        title = request.json.get('title')
-        description = request.json.get('description')
-        location = request.json.get('location')
-        created_by = request.json.get('created_by')
         if request.json:
+
+            id = request.json.get('id')
+            title = request.json.get('title')
+            description = request.json.get('description')
+            location = request.json.get('location')
+            created_by = request.json.get('created_by')
+
             req = Request(id=id, title=title, description=description, location=location, created_by=created_by)
             requests.append(req)
             return jsonify({
@@ -163,24 +165,23 @@ def create_app(config_name):
                         abort(404)
                 else:
                     abort(404)
-        else:
-            req_list = []
-            for item in requests:
-                if item["id"] == id:
-                    req = {
-                        "id": item["id"],
-                        "title": item["title"],
-                        "description": item["description"],
-                        "location": item["location"],
-                        "approved": item["approved"],
-                        "rejected": item["rejected"],
-                        "resolved": item["resolved"],
-                        "created_by": item["created_by"]
-                    }
-                    req_list.append(req)
-                    return jsonify(req_list), 200
-                else:
-                    abort(404)
+        req_list = []
+        for item in requests:
+            if item["id"] == id:
+                req = {
+                    "id": item["id"],
+                    "title": item["title"],
+                    "description": item["description"],
+                    "location": item["location"],
+                    "approved": item["approved"],
+                    "rejected": item["rejected"],
+                    "resolved": item["resolved"],
+                    "created_by": item["created_by"]
+                }
+                req_list.append(req)
+                return jsonify(req_list), 200
+            else:
+                abort(404)
 
     """
     update request view
@@ -244,7 +245,7 @@ def create_app(config_name):
               "resolved": req[0]["resolved"]
             }), 200
         else:
-            abort(404)
+            abort(401)
 
     """
     get request for admin

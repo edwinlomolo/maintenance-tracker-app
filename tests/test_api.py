@@ -35,7 +35,7 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
         """
         Test API can return all requests created by a user
         """
-        res = self.client().get("/users/api/v1.0/requests/", headers=dict(role="Edwin"))
+        res = self.client().get("/users/api/v1.0/requests/", headers=dict(role=""))
         data = json.loads(res.get_data(as_text=True))
         self.assertEqual(res.status_code, 200)
         assert(len(str(data)) > 0)
@@ -48,6 +48,15 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
         data = json.loads(res.get_data(as_text=True))
         self.assertEqual(res.status_code, 200)
         assert(len(str(data)) > 0)
+
+    def test_api_can_get_a_request(self):
+        """
+        Test API can get a request
+        """
+        res = self.client().get("/users/api/v1.0/requests/{}/".format(1), headers=dict(role=""))
+        data = json.loads(res.get_data(as_text=True))
+        self.assertEqual(res.status_code, 200)
+        assert(isinstance(data, list))
 
     def test_api_can_handle_edge_cases(self):
         """
@@ -89,6 +98,15 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
         data = json.loads(res.get_data(as_text=True))
         self.assertEqual(res.status_code, 200)
         self.assertEqual(str(data["location"]), "Karen")
+
+    def test_api_can_handle_empty_input(self):
+        """
+        Test API can handle empty or invalid response
+        """
+        res = self.client().post("/users/api/v1.0/requests/")
+        data = json.loads(res.get_data(as_text=True))
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(str(data["error"]), "Bad request")
 
 if __name__ == '__main__':
     unittest.main()

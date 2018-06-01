@@ -67,5 +67,14 @@ class UserTestCase(unittest.TestCase):
         data = json.loads(res.get_data(as_text=True))
         self.assertEqual(str(data["error"]), "Not Found")
 
+    def test_api_can_handle_empty_response(self):
+      """
+      Test API can handle empty or invalid request
+      """
+      res = self.client().post("/users/api/v1.0/account/register/")
+      data = json.loads(res.get_data(as_text=True))
+      self.assertEqual(res.status_code, 400)
+      self.assertEqual(str(data["error"]), "Bad request")
+
 if __name__ == '__main__':
   unittest.main()
