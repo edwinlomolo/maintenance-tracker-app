@@ -54,7 +54,7 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		Test API returns error for not found request
 		"""
 		res = self.client().get("/users/api/v1.0/requests/{}/".format(2), headers=dict(role="Edwin"))
-		data = json.loads(res.get_data(as_test=True))
+		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 404)
 		self.assertEqual(str(data["error"]), "Not Found")
 
