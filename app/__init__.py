@@ -92,8 +92,10 @@ def create_app(config_name):
 							"message": "Login was successfull",
 							"email": account["email"]
 						}), 200
-					abort(401)
-			abort(404)
+					else:
+						abort(401)
+				else:
+					abort(404)
 
 	# get all requests view
 	@app.route("/users/api/v1.0/requests/", methods=["GET"])
@@ -116,7 +118,7 @@ def create_app(config_name):
 					reqs.append(req)
 			return jsonify(reqs), 200
 		else:
-			abort(401)
+			return jsonify(requests), 200
 
 	# get a request view
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["GET"])
@@ -138,13 +140,27 @@ def create_app(config_name):
 							"created_by": item["created_by"]
 						}
 						reqs.append(req)
+						return jsonify(reqs), 200
 					else:
 						abort(404)
 				else:
 					abort(404)
-			return jsonify(reqs), 200
 		else:
-			abort(401)
+			req_list = []
+			for item in requests:
+				if item["id"] == id:
+					req = {
+						"id": item["id"],
+						"title": item["title"],
+						"description": item["description"],
+						"location": item["location"],
+						"approved": item["approved"],
+						"rejected": item["rejected"],
+						"resolved": item["resolved"],
+						"created_by": item["created_by"]
+					}
+					req_list.append(req)
+					return jsonify(req_list), 200
 
 	# update request view
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["POST"])
@@ -174,6 +190,8 @@ def create_app(config_name):
 		role = str(request.headers["role"])
 		if role == "admin":
 			return jsonify(requests), 200
+		else:
+			abort(401)
 
 	# put request for admin
 	@app.route("/admin/api/v1.0/requests/<int:id>/", methods=["POST"])
@@ -216,6 +234,8 @@ def create_app(config_name):
 				"rejected": req[0]["rejected"],
 				"resolved": req[0]["resolved"]
 			}), 200
+		else:
+			abort(401)
 
 	# 400 error handler
 	@app.errorhandler(400)
