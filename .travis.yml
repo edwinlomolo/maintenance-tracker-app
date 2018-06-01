@@ -5,6 +5,10 @@ sudo: true
 python:
   - "3.6"
 
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get -y install
+
 install:
   - pip install -r requirements.txt
 
