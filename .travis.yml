@@ -12,7 +12,4 @@ script:
 after_success:
   - coveralls
   - codecov
-
-  cache: pip
-
     
