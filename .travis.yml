@@ -12,7 +12,6 @@ script:
   - nosetests --with-coverage --cover-package=app tests/ && coverage report
 
 after_success:
-  - codecov
   - coveralls
 
   cache: pip
