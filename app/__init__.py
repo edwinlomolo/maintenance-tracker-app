@@ -124,6 +124,8 @@ def create_app(config_name):
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["GET"])
 	def get_request(id):
 		name = request.headers["role"]
+		if id > len(requests):
+			abort(404)
 		reqs = []
 		if name:
 			for item in requests:
@@ -161,10 +163,14 @@ def create_app(config_name):
 					}
 					req_list.append(req)
 					return jsonify(req_list), 200
+				else:
+					abort(404)
 
 	# update request view
 	@app.route("/users/api/v1.0/requests/<int:id>/", methods=["POST"])
 	def update_request(id):
+		if id > len(requests):
+			abort(404)
 		if request.json:
 			req = [item for item in requests if item["id"] == id]
 
@@ -197,6 +203,8 @@ def create_app(config_name):
 	@app.route("/admin/api/v1.0/requests/<int:id>/", methods=["POST"])
 	def update(id):
 		role = str(request.headers["role"])
+		if id > len(requests):
+			abort(404)
 		if role == "admin":
 			req = [item for item in requests if item["id"] == id]
 
