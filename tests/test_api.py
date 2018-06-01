@@ -44,10 +44,19 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		"""
 		Test API can return a request created by a user
 		"""
-		res = self.client().get("/users/api/v1.0/requests/{}/".format(1), headers=dict(role="Edwin"))
+		res = self.client().get("/users/api/v1.0/requests/{}/".format(1), headers=dict(role="Mike"))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 200)
 		assert(len(str(data)) > 0)
+
+	def test_api_returns_error_for_unauthorized_access(self):
+		"""
+		Test API returns error for not found request
+		"""
+		res = self.client().get("/users/api/v1.0/requests/{}/".format(2), headers=dict(role="Edwin"))
+		data = json.loads(res.get_data(as_test=True))
+		self.assertEqual(res.status_code, 404)
+		self.assertEqual(str(data["error"]), "Not Found")
 
 	def test_api_can_edit_a_request(self):
 		"""

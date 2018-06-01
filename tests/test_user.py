@@ -46,7 +46,7 @@ class UserTestCase(unittest.TestCase):
 		"""
 		res = self.client().post("/users/api/v1.0/authenticate/", json=dict(
 			email="milly@gmail.com",
-			password=1234
+			password=12
 		))
 		data = json.loads(res.get_data(as_text=True))
 		self.assertEqual(res.status_code, 401)
