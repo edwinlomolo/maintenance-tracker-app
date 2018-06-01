@@ -2,13 +2,16 @@
 Request model
 """
 class Request(object):
-	"""
-	Request class representation
-	"""
+    """
+    Request class representation
+    """
 
-	def __init__(self, id, title, description, location, created_by):
-		self.id = 0
-		self.title = title
-		self.description = description,
-		self.location = location
-		self.created_by = created_by
+    def __init__(self, id, title, description, location, created_by):
+        self.id = id
+        self.title = title
+        self.description = description,
+        self.location = location
+        self.created_by = created_by
+        self.approved = False
+        self.rejected = False
+        self.resolved = False
