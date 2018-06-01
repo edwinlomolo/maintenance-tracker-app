@@ -17,6 +17,31 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
         self.app = create_app(config_name="testing")
         self.client = self.app.test_client
 
+	def test_api_return_message_for_home_view(self):
+		"""
+		Test API can return message for home endpoint
+		"""
+		res = self.client().get("/")
+		data = json.loads(res.get_data(as_text=True))
+		self.assertEqual(res.status_code, 200)
+		self.assertEqual(str(data["message"]), "Welcome to Maintenance Tracker API")
+
+	def test_api_can_create_a_request(self):
+		"""
+		Test API can create a request
+		"""
+		res = self.client().post("/users/api/v1.0/requests/", json=dict(
+			title="Busted pipe",
+			description="I have a leaking pipe in my sink and i have children in the house",
+			location="Kisumu",
+			create_by="Mike"
+		))
+		data = json.loads(res.get_data(as_text=True))
+		self.assertEqual(res.status_code, 201)
+		self.assertIn("title", str(data))
+
+
+
     def test_api_can_create_a_request(self):
         """
         Test API can create a request
@@ -30,6 +55,8 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
         data = json.loads(res.get_data(as_text=True))
         self.assertEqual(res.status_code, 201)
         self.assertIn("title", str(data))
+
+        
 
     def test_api_can_return_all_requests(self):
         """
