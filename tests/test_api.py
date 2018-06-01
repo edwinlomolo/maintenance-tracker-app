@@ -49,6 +49,24 @@ class MaintenanceTrackerTestCase(unittest.TestCase):
 		self.assertEqual(res.status_code, 200)
 		assert(len(str(data)) > 0)
 
+	def test_api_can_handle_edge_cases(self):
+		"""
+		Test API can handle abnormal requests for get
+		"""
+		res = self.client().get("/users/api/v1.0/requests/{}/".format(10), headers=dict(role="Mike"))
+		data = json.loads(res.get_data(as_text=True))
+		self.assertEqual(res.status_code, 404)
+		self.assertEqual(str(data["error"]), "Not Found")
+
+	def test_api_can_handle_edge_cases(self):
+		"""
+		Test API cna handle abnormal requests for post
+		"""
+		res = self.client().post("/users/api/v1.0/requests/{}/".format(10), headers=dict(role="Mike"))
+		data = json.loads(res.get_data(as_text=True))
+		self.assertEqual(res.status_code, 404)
+		self.assertEqual(str(data["error"]), "Not Found")
+
 	def test_api_returns_error_for_unauthorized_access(self):
 		"""
 		Test API returns error for not found request
