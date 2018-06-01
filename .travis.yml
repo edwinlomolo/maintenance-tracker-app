@@ -21,7 +21,8 @@ install:
   - pip install --user -r requirements.txt
 
 script:
-  - nosetests --with-coverage --cover-package=app tests
+  - nosetests --with-coverage --cover-package=app tests/ && coverage report
 
 after_success:
   - coveralls
+  - codecov
