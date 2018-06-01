@@ -240,12 +240,12 @@ def create_app(config_name):
 	# 400 error handler
 	@app.errorhandler(400)
 	def bad_request(error):
-		return make_response(jsonify({"error": "Bad request"}))
+		return make_response(jsonify({"error": "Bad request"})), 400
 
 	# 401 error handler
 	@app.errorhandler(401)
 	def unauthorized(error):
-		return make_response(jsonify({"error": "Unauthorized"}))
+		return make_response(jsonify({"error": "Unauthorized"})), 401
 
 	# 404 error handler
 	@app.errorhandler(404)
