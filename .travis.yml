@@ -3,13 +3,10 @@ langauge: python
 sudo: true
 
 python:
-  - "2.7"
-
-before_install:
-  - sudo -H pip install --upgrade pip
+  - "3.6"
 
 install:
-  - sudo pip install -r requirements.txt
+  - pip install -r requirements.txt
 
 script:
   - nosetests --with-coverage --cover-package=app tests/ && coverage report
