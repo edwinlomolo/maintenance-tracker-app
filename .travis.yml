@@ -11,7 +11,7 @@ before_install:
   - sudo -H pip install --upgrade pip
 
 install:
-  - pip install -r --user requirements.txt
+  - sudo pip install -r requirements.txt
 
 script:
   - nosetests --with-coverage --cover-package=app tests/ && coverage report
