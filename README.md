@@ -57,7 +57,9 @@ a response from a Python interpreter it will include a version number in its ini
 
 If you need to download Python, you may as well download the latest stable version. Please see the [Python downloads](https://www.python.org/downloads/) page for the most up to date version of Python 2 and Python 3.
 
-While in yout terminal,
+## Installation and Setup
+
+While in your terminal,
 
 Install `pip` - Python package manager
 
@@ -108,6 +110,8 @@ export FLASK_ENV=development
 export FLASK_APP=run.py
 ```
 
+## Start application
+
 Now run the application by executing the following command
 
 ```
@@ -132,6 +136,14 @@ your browser or curl.
 /admin/api/v1.0/requests/ | GET | Get al requests | Private(Admin only)
 /admin/api/v1.0/requests/id/ | GET | Get a specific request details | Private(Admin only)
 /admin/api/v1.0/requests/id/ | PUT | Edit a request | Private(Admin only)
+
+## Run tests
+
+To run tests, press `CTRL+C` to stop the server and execute the following command
+
+```
+nosetests --rednose --with-coverage --cover-package=app tests/
+```
 
 ## Contributing
 I appreciate your eagerness to contribute. As the project maintainer, i will start accepting contribution as from 5th June 2018.
