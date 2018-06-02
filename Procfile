@@ -1,1 +1,1 @@
-web: gunicorn run:edwin-mt
+web: gunicorn run:app
