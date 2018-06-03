@@ -39,12 +39,12 @@ The App UI elements are being hosted here [Maintenance Tracker](https://3dw1nm05
 
 ### Tools
  * [Pivotal Tracker](https://www.pivotaltracker.com/n/projects/2174758) - Project Management Tool
- * [Postman](https://www.getpostman.com/) - Postman make API development Easy
+ * [Postman](https://www.getpostman.com/) - Postman makes API development Easy
  * [GitHub](https://github.com/3dw1nM0535/maintenance-tracker-app-ui) - Project tracking and collaboration tool
  * [TravisCI](https://travis-ci.org/3dw1nM0535/maintenance-tracker-app-ui) - Distributed Continuous Integration service used
  to build and testing software projects
  * [Coveralls](https://coveralls.io/jobs/37078082) - Web service used to help track your code coverage over time.
- * [Python](https://www.python.org/) - A Programming language that makes your work quickly and integrate systems more effectively
+ * [Python](https://www.python.org/) - A Programming language that makes you work quickly and integrate systems more effectively
 
 # Getting Started with Maintenance Tracker API
 
@@ -64,16 +64,16 @@ While in your terminal,
 Install `pip` - Python package manager
 
 ```
-sudo apt-get install python-pip
+sudo apt install python-pip
 ```
 
-Clone the repository
+Clone this repository
 
 ```
 git clone https://github.com/3dw1nM0535/maintenance-tracker-app.git
 ```
 
-Navigate into the directory
+Navigate into the directory of your cloned repository
 
 ```
 cd maintenance-tracker-app
@@ -96,6 +96,7 @@ Activate the virtual environment
 ```
 . venv/bin/activate
 ```
+(Note the space after the full-stop)
 
 Install the requirements or package dependencies for the project
 
@@ -123,7 +124,7 @@ Done! You are set to interact with the API endpoints.
 ## API Endpoints
 
 Maintenance Tracker exposes the following API endpoints. You can test this endpoints using [Postman](https://www.getpostman.com/),
-your browser or curl.
+your browser or [Curl](https://curl.haxx.se/).
 
 **Endpoint** | **HTTP Method** | **Resource** | **Access Type** 
 -------------|-----------------|--------------|----------------
@@ -133,7 +134,7 @@ your browser or curl.
 /users/api/v1.0/requests/ | POST | Create request | Private(Authenticated users only)
 /users/api/v1.0/requests/id/ | GET | Get a specific request | Private(Authenticated users only)
 /users/api/v1.0/requests/id/ | PUT | Edit a specific request | Private(Authenticated users only)
-/admin/api/v1.0/requests/ | GET | Get al requests | Private(Admin only)
+/admin/api/v1.0/requests/ | GET | Get all requests | Private(Admin only)
 /admin/api/v1.0/requests/id/ | GET | Get a specific request details | Private(Admin only)
 /admin/api/v1.0/requests/id/ | PUT | Edit a request | Private(Admin only)
 
@@ -147,15 +148,11 @@ nosetests --rednose --with-coverage --cover-package=app tests/
 
 ## Contributing
 I appreciate your eagerness to contribute. As the project maintainer, i will start accepting contribution as from 5th June 2018.
-I will be reinforcing endpoints and make it scaleable before open sourcing.Thank you for your patience.
+I will be reinforcing endpoints and make it scaleable on my end before open sourcing.Thank you for your patience.
 
 ## Author
 
 [**Edwin Moses**](https://github.com/3dw1nM0535)
-
-## Licensing
-
-Maintenance Tracker is [MIT Licensed]()
 
 ## Acknowledgements
 
