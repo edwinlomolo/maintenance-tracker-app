@@ -79,4 +79,3 @@ class User(object):
         except jwt.InvalidTokenError:
             # if token is invalid, probe our user to register or login to get a new one.
             return "Invalid token. Please register or log in."
-
