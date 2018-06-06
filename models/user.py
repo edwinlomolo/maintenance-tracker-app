@@ -61,8 +61,8 @@ class User(object):
             if row is not None:
                 return row
             return "Not Found"
-        except:
-            return "Encountered error"
+        except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
+            return error
 
     def validate_password(self, password):
         """
@@ -70,7 +70,7 @@ class User(object):
         """
         return Bcrypt().check_password_hash(self.password, password)
 
-    def generate_token(self, user_id):
+    def generate_token(self, user_id): # pylint: disable=no-self-use
         """
         Generate JWT token for access and authentication
         """
