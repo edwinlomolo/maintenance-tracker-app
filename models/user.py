@@ -1,11 +1,11 @@
 """
 User model
 """
-import psycopg2
+from datetime import datetime, timedelta
 from flask_bcrypt import Bcrypt
 import jwt
-from datetime import datetime, timedelta
-from flask import current_app
+from flask import current_app, jsonify
+import psycopg2
 
 class User(object):
     """
@@ -23,17 +23,46 @@ class User(object):
         query = """INSERT INTO USERS (email, password) VALUES(%s, %s)"""
         conn = None
         try:
-            conn = psycopg2.connect(host="localhost", database="mtapi", user="edwin", password="47479031")
+            conn = psycopg2.connect(
+                host="localhost",
+                database="mtapi",
+                user="edwin",
+                password="47479031"
+            )
             cur = conn.cursor()
             cur.execute(query, (self.email, self.password,))
 
             conn.commit()
             conn.close()
-        except(Exception,psycopg2.DatabaseError) as error:
+        except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
             print error
         finally:
             if conn is not None:
                 conn.close()
+
+    def query(self, email): # pylint: disable=no-self-use
+        """
+        Query db for data
+        """
+        query = """SELECT EMAIL FROM USERS WHERE EMAIL = %s """
+        try:
+            conn = psycopg2.connect(
+                host="localhost",
+                database="mtapi",
+                user="host",
+                password="47479031"
+            )
+
+            cur = conn.cursor()
+            cur.execute(query, (email,))
+
+            row = cur.fetchone()
+
+            if row is not None:
+                return jsonify(row)
+            return "Not found"
+        except:
+            return "Encountered error"
 
     def validate_password(self, password):
         """
@@ -46,11 +75,11 @@ class User(object):
         Generate JWT token for access and authentication
         """
         try:
-            # setup payload with an expiration data
+            # setup payload with an expiration date
             payload = {
                 "exp": datetime.utcnow() + timedelta(minutes=60),
                 "iat": datetime.utcnow(),
-                "sub": user_id
+                "user_id": user_id
             }
 
             # create jwt token string using the secret key
@@ -60,9 +89,9 @@ class User(object):
                 algorithm="HS256"
             )
             return jwt_string
-        except Exception as e:
+        except Exception as error: # pylint: disable=broad-except
             # return error as string
-            return str(e)
+            return str(error)
 
     @staticmethod
     def decode_token(token):
@@ -72,7 +101,7 @@ class User(object):
         try:
             # try decoding using SECRET_KEY
             payload = jwt.decode(token, current_app.config.get("SECRET_KEY"))
-            return payload["sub"]
+            return payload["user_id"]
         except jwt.ExpiredSignatureError:
             # if token is expired, probe our user to login to get a new one
             return "Expired token. Please login to get a new one."
