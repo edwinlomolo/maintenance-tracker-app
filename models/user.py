@@ -1,11 +1,11 @@
 """
 User model
 """
+import os
 from datetime import datetime, timedelta
 from flask_bcrypt import Bcrypt
-import jwt
-from flask import current_app, jsonify
 import psycopg2
+import jwt
 
 class User(object):
     """
@@ -24,10 +24,10 @@ class User(object):
         conn = None
         try:
             conn = psycopg2.connect(
-                host="localhost",
-                database="mtapi",
-                user="edwin",
-                password="47479031"
+                host=os.getenv("HOST"),
+                database=os.getenv("DB"),
+                user=os.getenv("USER"),
+                password=os.getenv("PASS")
             )
             cur = conn.cursor()
             cur.execute(query, (self.email, self.password,))
@@ -39,30 +39,6 @@ class User(object):
         finally:
             if conn is not None:
                 conn.close()
-    @staticmethod
-    def query(email): # pylint: disable=no-self-use
-        """
-        Query db for data
-        """
-        query = """SELECT EMAIL FROM USERS WHERE EMAIL = %s """
-        try:
-            conn = psycopg2.connect(
-                host="localhost",
-                database="mtapi",
-                user="host",
-                password="47479031"
-            )
-
-            cur = conn.cursor()
-            cur.execute(query, (email,))
-
-            row = cur.fetchone()
-
-            if row is not None:
-                return row
-            return "Not Found"
-        except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
-            return error
 
     def validate_password(self, password):
         """
@@ -85,7 +61,7 @@ class User(object):
             # create jwt token string using the secret key
             jwt_string = jwt.encode(
                 payload,
-                current_app.config.get("SECRET_KEY"),
+                os.getenv("SECRET_KEY"),
                 algorithm="HS256"
             )
             return jwt_string
@@ -100,7 +76,7 @@ class User(object):
         """
         try:
             # try decoding using SECRET_KEY
-            payload = jwt.decode(token, current_app.config.get("SECRET_KEY"))
+            payload = jwt.decode(token, os.getenv("SECRET_KEY"))
             return payload["user_id"]
         except jwt.ExpiredSignatureError:
             # if token is expired, probe our user to login to get a new one
