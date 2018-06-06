@@ -1,5 +1,5 @@
 """
-Authentication Blueprint
+Registration view
 """
 import psycopg2
 
