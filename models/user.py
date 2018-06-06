@@ -16,7 +16,7 @@ class User(object):
         self.email = email
         self.password = Bcrypt().generate_password_hash(password).decode()
 
-    def insert_user(self):
+    def save(self):
         """
         Save user to the database
         """
@@ -39,8 +39,8 @@ class User(object):
         finally:
             if conn is not None:
                 conn.close()
-
-    def query(self, email): # pylint: disable=no-self-use
+    @staticmethod
+    def query(email): # pylint: disable=no-self-use
         """
         Query db for data
         """
@@ -59,8 +59,8 @@ class User(object):
             row = cur.fetchone()
 
             if row is not None:
-                return jsonify(row)
-            return "Not found"
+                return row
+            return "Not Found"
         except:
             return "Encountered error"
 
