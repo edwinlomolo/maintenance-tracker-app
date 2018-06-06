@@ -59,10 +59,30 @@ class Registration(MethodView):
                 "error": "Please provide both an email and password."
             })), 400
 
-# Define API Resource
+class Login(MethodView):
+    """
+    This class represents user signin view
+    """
+    def post(self): # pylint: disable=no-self-use
+        """
+        Handles post requests on this view
+        """
+        if request.json and request.json.get('email') and request.json.get('password'):
+            user = User.get_user(request.json.get('email'))
+            return jsonify(user)
+
+# Define Signup Resource
 SIGN_UP = Registration.as_view("signup_view")
 AUTH_BLUEPRINT.add_url_rule(
     "/api/v1.0/auth/signup/",
     view_func=SIGN_UP,
+    methods=["POST"]
+)
+
+# Define Signin Resource
+SIGN_IN = Login.as_view("signin_view")
+AUTH_BLUEPRINT.add_url_rule(
+    "/api/v1.0/auth/signin/",
+    view_func=SIGN_IN,
     methods=["POST"]
 )
