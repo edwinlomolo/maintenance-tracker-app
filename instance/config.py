@@ -1,11 +1,18 @@
 """
 Configurations variable
 """
+import os
+
 class Config(object): # pylint: disable=too-few-public-methods
     """
     Parent configurations class
     """
     DEBUG = False
+    TESTING = False
+    HOST = os.getenv("HOST")
+    DATABASE = os.getenv("DATABASE")
+    USER = os.getenv("USER")
+    PASS = os.getenv("PASS")
 
 class Development(Config): # pylint: disable=too-few-public-methods
     """
@@ -17,8 +24,12 @@ class Testing(Config): # pylint: disable=too-few-public-methods
     """
     Testing configurations class
     """
-    DEBUG = True
+    DEBUG = False
     TESTING = True
+    HOST = os.getenv("HOST")
+    DATABASE = os.getenv("TEST_DATABASE")
+    USER = os.getenv("USER")
+    PASS = os.getenv("PASS")
 
 class Production(Config): # pylint: disable=too-few-public-methods
     """
