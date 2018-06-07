@@ -29,7 +29,7 @@ def create_app(config_name): # pylint: disable=too-many-locals
         """
         Create new request for logged in user
         """
-        if request.header["Authorization"]:
+        if request.headers["Authorization"]:
             auth_header = request.headers["Authorization"] # get authorization header
             token = auth_header.split(" ")[1] # split header to obtain token
 
