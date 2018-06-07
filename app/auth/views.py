@@ -66,10 +66,68 @@ class Registration(MethodView):
                 "error": "Please provide both an email and password."
             })), 400
 
-# Define API Resource
+class Login(MethodView):
+    """
+    This class represents user signin view
+    """
+    def post(self): # pylint: disable=no-self-use
+        """
+        Handles post requests on this view
+        """
+        if request.json and request.json.get('email') and request.json.get('password'):
+
+            # Get data from request
+            email = request.json.get('email')
+            password = request.json.get('password')
+
+            # Try connecting to database
+            try:
+                conn = psycopg2.connect(
+                    host=os.getenv("HOST"),
+                    database=os.getenv("DATABASE"),
+                    user=os.getenv("USER"),
+                    password=os.getenv("PASS")
+                )
+                query = """SELECT ID, EMAIL, PASSWORD FROM USERS WHERE EMAIL = %s"""
+
+                cur = conn.cursor()
+                cur.execute(query, (email,))
+
+                row = cur.fetchone()
+
+                # Validate password
+                if row is not None and User.validate_password(row[2], password):
+                    # Send back token
+                    return make_response(jsonify({
+                        "message": "Logged in successfully.",
+                        "token": User.generate_token(row[0])
+                    })), 200
+                # If wrong password or incorrect email address
+                return make_response(jsonify({
+                    "error": "Invalid email or password."
+                })), 401
+            except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
+                return make_response(jsonify({
+                    "error": str(error)
+                })), 500
+        else:
+            # If request is empty
+            return make_response(jsonify({
+                "message": "Please provide both a valid email and password to log in."
+            }))
+
+# Define Signup Resource
 SIGN_UP = Registration.as_view("signup_view")
 AUTH_BLUEPRINT.add_url_rule(
     "/api/v1.0/auth/signup/",
     view_func=SIGN_UP,
+    methods=["POST"]
+)
+
+# Define Signin Resource
+SIGN_IN = Login.as_view("signin_view")
+AUTH_BLUEPRINT.add_url_rule(
+    "/api/v1.0/auth/signin/",
+    view_func=SIGN_IN,
     methods=["POST"]
 )

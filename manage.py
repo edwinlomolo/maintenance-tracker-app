@@ -1,6 +1,7 @@
 """
 Create tables for our database
 """
+import os
 import psycopg2
 
 def create_tables():
@@ -34,10 +35,10 @@ def create_tables():
     # Try connecting to the database
     try:
         conn = psycopg2.connect(
-            host="localhost",
-            database="mtapi",
-            user="edwin",
-            password="47479031"
+            host=os.getenv('HOST'),
+            database=os.getenv('DATABASE'),
+            user=os.getenv('USER'),
+            password=os.getenv('PASS')
         )
 
         cur = conn.cursor()
