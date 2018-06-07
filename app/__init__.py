@@ -37,10 +37,7 @@ def create_app(config_name): # pylint: disable=too-many-locals
                 user_id = User.decode_token(token)
                 # check if user_id is a string
                 if not isinstance(user_id, str):
-                    if request.json
-                    and request.json.get('title')
-                    and request.json.get('description')
-                    and request.json.get('location'):
+                    if request.json and request.json.get('title') and request.json.get('description') and request.json.get('location'):
                         title = request.json.get('title')
                         description = request.json.get('description')
                         location = request.json.get('location')
@@ -59,18 +56,14 @@ def create_app(config_name): # pylint: disable=too-many-locals
                         })
                         response.status_code = 201
                         return response
-                    else:
-                        return make_response(jsonify({
-                            "error": "Provide necessary data for making a request."
-                        })), 400
-                else:
-                    return make_response(jsonify({"message": str(user_id)})), 401
-            else:
-                return make_response(jsonify({"message": "Invalid request"})), 401
-        else:
-            return make_response(jsonify({
-                "message": "No token provided. Register or Log In to obtain one."
-            })), 401
+                    return make_response(jsonify({
+                        "error": "Provide necessary data for making a request."
+                    })), 400
+                return make_response(jsonify({"message": str(user_id)})), 401
+            return make_response(jsonify({"message": "Invalid request"})), 401
+        return make_response(jsonify({
+            "message": "No token provided. Register or Log In to obtain one."
+        })), 401
 
     from .auth import AUTH_BLUEPRINT
     app.register_blueprint(AUTH_BLUEPRINT)
