@@ -76,19 +76,5 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 400)
         self.assertEqual(str(data["error"]), "Bad request")
 
-    def tearDown(self):
-        """
-        Delete record from database after running tests
-        """
-        conn = None
-        # Try connecting to the database
-        try:
-            conn = psycopg2.connect(
-                host=os.getenv("HOST"),
-                database=os.getenv("TEST_DATABASE"),
-                user=os.getenv("USER"),
-                password=os.getenv("PASS")
-            )
-
 if __name__ == '__main__':
     unittest.main()
