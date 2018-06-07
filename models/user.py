@@ -4,8 +4,14 @@ User model
 import os
 from datetime import datetime, timedelta
 from flask_bcrypt import Bcrypt
+
 import psycopg2
 import jwt
+
+import jwt
+import psycopg2
+import os
+
 
 class User(object):
     """
@@ -41,12 +47,39 @@ class User(object):
                 conn.close()
 
     def validate_password(self, password):
+
+    @staticmethod
+    def query(email): # pylint: disable=no-self-use
+        """
+        Query db for data
+        """
+        query = """SELECT EMAIL FROM USERS WHERE EMAIL = %s """
+        try:
+            conn = psycopg2.connect(
+                host="localhost",
+                database="mtapi",
+                user="host",
+                password="47479031"
+            )
+
+            cur = conn.cursor()
+            cur.execute(query, (email,))
+
+            row = cur.fetchone()
+
+            if row is not None:
+                return row
+            return "Not Found"
+        except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
+            return error
+    @staticmethod
+    def validate_password(password1, password2):
         """
         Check if passwords provided match
         """
-        return Bcrypt().check_password_hash(self.password, password)
-
-    def generate_token(self, user_id): # pylint: disable=no-self-use
+        return Bcrypt().check_password_hash(password1, password2)
+    @staticmethod
+    def generate_token(user_id): # pylint: disable=no-self-use
         """
         Generate JWT token for access and authentication
         """

@@ -21,11 +21,11 @@ class UserTestCase(unittest.TestCase):
         Test API can create user account
         """
         res = self.client().post("/users/api/v1.0/account/register/", json=dict(
-          firstname="Edwin",
-          lastname="Lomolo",
-          email="edwin@gmail.com",
-          password=1234,
-          confirm_password=1234
+            firstname="Edwin",
+            lastname="Lomolo",
+            email="edwin@gmail.com",
+            password=1234,
+            confirm_password=1234
         ))
         data = json.loads(res.get_data(as_text=True))
         self.assertEqual(res.status_code, 201)
@@ -36,8 +36,8 @@ class UserTestCase(unittest.TestCase):
         Test API can login user
         """
         res = self.client().post("/users/api/v1.0/authenticate/", json=dict(
-          email="milly@gmail.com",
-          password=4747
+            email="milly@gmail.com",
+            password=4747
         ))
         data = json.loads(res.get_data(as_text=True))
         self.assertEqual(res.status_code, 200)
@@ -48,8 +48,8 @@ class UserTestCase(unittest.TestCase):
         Test API returns error for wrong password
         """
         res = self.client().post("/users/api/v1.0/authenticate/", json=dict(
-          email="milly@gmail.com",
-          password=12
+            email="milly@gmail.com",
+            password=12
         ))
         data = json.loads(res.get_data(as_text=True))
         self.assertEqual(res.status_code, 401)
@@ -60,8 +60,8 @@ class UserTestCase(unittest.TestCase):
         Test API returns error for unregistered user
         """
         res = self.client().post("/users/api/v1.0/authenticate/", json=dict(
-          email="edwin@gmail.com",
-          password=3434
+            email="edwin@gmail.com",
+            password=3434
         ))
         self.assertEqual(res.status_code, 404)
         data = json.loads(res.get_data(as_text=True))
@@ -71,10 +71,10 @@ class UserTestCase(unittest.TestCase):
       """
       Test API can handle empty or invalid request
       """
-      res = self.client().post("/users/api/v1.0/account/register/")
-      data = json.loads(res.get_data(as_text=True))
-      self.assertEqual(res.status_code, 400)
-      self.assertEqual(str(data["error"]), "Bad request")
+        res = self.client().post("/users/api/v1.0/account/register/")
+        data = json.loads(res.get_data(as_text=True))
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(str(data["error"]), "Bad request")
 
 if __name__ == '__main__':
-  unittest.main()
+    unittest.main()

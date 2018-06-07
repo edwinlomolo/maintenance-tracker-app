@@ -1,30 +1,32 @@
 """
 Configurations variable
 """
-class Config(object):
+
+class Config(object): # pylint: disable=too-few-public-methods
     """
     Parent configurations class
     """
     DEBUG = False
+    TESTING = False
 
-class Development(Config):
+class Development(Config): # pylint: disable=too-few-public-methods
     """
     Development configurations class
     """
     DEBUG = True
 
-class Testing(Config):
+class Testing(Config): # pylint: disable=too-few-public-methods
     """
     Testing configurations class
     """
     DEBUG = True
     TESTING = True
 
-class Production(Config):
+class Production(Config): # pylint: disable=too-few-public-methods
     """
     Production configurations class
     """
-    TESTING = True
+    TESTING = False
     DEBUG = False
 
 APP_CONFIG = {
