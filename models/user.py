@@ -4,8 +4,8 @@ User model
 from datetime import datetime, timedelta
 from flask_bcrypt import Bcrypt
 import jwt
-from flask import current_app, jsonify
 import psycopg2
+import os
 
 class User(object):
     """
@@ -63,14 +63,14 @@ class User(object):
             return "Not Found"
         except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
             return error
-
-    def validate_password(self, password):
+    @staticmethod
+    def validate_password(password1, password2):
         """
         Check if passwords provided match
         """
-        return Bcrypt().check_password_hash(self.password, password)
-
-    def generate_token(self, user_id): # pylint: disable=no-self-use
+        return Bcrypt().check_password_hash(password1, password2)
+    @staticmethod
+    def generate_token(user_id): # pylint: disable=no-self-use
         """
         Generate JWT token for access and authentication
         """
@@ -85,7 +85,7 @@ class User(object):
             # create jwt token string using the secret key
             jwt_string = jwt.encode(
                 payload,
-                current_app.config.get("SECRET_KEY"),
+                os.getenv("SECRET_KEY"),
                 algorithm="HS256"
             )
             return jwt_string
@@ -100,7 +100,7 @@ class User(object):
         """
         try:
             # try decoding using SECRET_KEY
-            payload = jwt.decode(token, current_app.config.get("SECRET_KEY"))
+            payload = jwt.decode(token, os.getenv("SECRET_KEY"))
             return payload["user_id"]
         except jwt.ExpiredSignatureError:
             # if token is expired, probe our user to login to get a new one
