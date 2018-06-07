@@ -1,11 +1,17 @@
 """
 User model
 """
+import os
 from datetime import datetime, timedelta
 from flask_bcrypt import Bcrypt
+
+import psycopg2
+import jwt
+
 import jwt
 import psycopg2
 import os
+
 
 class User(object):
     """
@@ -24,10 +30,10 @@ class User(object):
         conn = None
         try:
             conn = psycopg2.connect(
-                host="localhost",
-                database="mtapi",
-                user="edwin",
-                password="47479031"
+                host=os.getenv("HOST"),
+                database=os.getenv("DB"),
+                user=os.getenv("USER"),
+                password=os.getenv("PASS")
             )
             cur = conn.cursor()
             cur.execute(query, (self.email, self.password,))
@@ -39,6 +45,9 @@ class User(object):
         finally:
             if conn is not None:
                 conn.close()
+
+    def validate_password(self, password):
+
     @staticmethod
     def query(email): # pylint: disable=no-self-use
         """
