@@ -6,6 +6,8 @@ Tests for user
  ==> Token generation
  ===> Token validation
 """
+import os
+import psycopg2
 import unittest
 import json
 from app import create_app
@@ -151,6 +153,33 @@ class AuthenticationTestCases(unittest.TestCase):
         self.assertEqual(
             str(result["error"]), "Invalid email or password."
         )
+
+    def tearDown(self):
+        """
+        Clean up database after running tests
+        """
+        conn = None
+        try:
+            conn = psycopg2.connect(
+                host=os.getenv("HOST"),
+                database=os.getenv("DATABASE"),
+                user=os.getenv("USER"),
+                password=os.getenv("PASS")
+            )
+
+            query = """DELETE FROM USERS WHERE EMAIL = %s"""
+            email = "johndoe@email.com"
+
+            cur = conn.cursor()
+            cur.execute(query, (email,))
+
+            cur.close()
+            conn.commit()
+        except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
+            print error
+        finally:
+            if conn is not None:
+                conn.close()
 
 if __name__ == '__main__':
     unittest.main()
