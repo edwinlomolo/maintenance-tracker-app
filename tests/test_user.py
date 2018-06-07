@@ -39,7 +39,7 @@ class AuthenticationTestCases(unittest.TestCase):
 
     def test_user_can_log_in(self):
         """
-        Test API cana authenticate user
+        Test API can authenticate user
         """
         res = self.client().post(
             "/api/v1.0/auth/signin/",
@@ -51,3 +51,15 @@ class AuthenticationTestCases(unittest.TestCase):
             str(result["message"]), "You logged in successfully."
         )
         self.assertIn(result["token"], "eY")
+
+    def test_unauthorized_access(self):
+        """
+        Test API can handle unauthorized access
+        """
+        res = self.client().post(
+            "/api/v1.0/auth/signin/",
+            json=dict(email="johndoe@email.com", password="474")
+        )
+        result = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(result["error"], "Invalid password or email.")
