@@ -31,7 +31,7 @@ class User(object):
         try:
             conn = psycopg2.connect(
                 host=os.getenv("HOST"),
-                database=os.getenv("DB"),
+                database=os.getenv("DATABASE"),
                 user=os.getenv("USER"),
                 password=os.getenv("PASS")
             )
