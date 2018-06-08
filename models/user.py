@@ -45,7 +45,7 @@ class User(object):
         """
         Query db for data
         """
-        query = """SELECT * FROM REQUESTS WHERE CREATED_BY = %d"""
+        query = """SELECT * FROM REQUESTS WHERE CREATED_BY = %s"""
         try:
             conn = psycopg2.connect(
                 host=os.getenv("HOST"),
