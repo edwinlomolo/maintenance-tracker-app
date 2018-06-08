@@ -2,67 +2,37 @@
 User model
 """
 from datetime import datetime, timedelta
-from flask_bcrypt import Bcrypt
 import jwt
-from flask import current_app, jsonify
-import psycopg2
+from flask_bcrypt import Bcrypt
+from models.db import Db
 
 class User(object):
     """
     User class representation
     """
 
-    def __init__(self, email, password):
+    def __init__(self, firstname, lastname, username, email, password):
+        self.firstname = firstname
+        self.lastname = lastname
+        self.username = username
         self.email = email
         self.password = Bcrypt().generate_password_hash(password).decode()
 
     def save(self):
         """
-        Save user to the database
+        Save user to database
         """
-        query = """INSERT INTO USERS (email, password) VALUES(%s, %s)"""
-        conn = None
-        try:
-            conn = psycopg2.connect(
-                host="localhost",
-                database="mtapi",
-                user="edwin",
-                password="47479031"
-            )
-            cur = conn.cursor()
-            cur.execute(query, (self.email, self.password,))
+        db_connection = Db()
+        db_connection.save_new_user(self.firstname, self.lastname, self.email, self.username, self.password)
 
-            conn.commit()
-            conn.close()
-        except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
-            print error
-        finally:
-            if conn is not None:
-                conn.close()
     @staticmethod
-    def query(email): # pylint: disable=no-self-use
+    def email_is_taken(email):
         """
-        Query db for data
+        Check if email is taken
         """
-        query = """SELECT EMAIL FROM USERS WHERE EMAIL = %s """
-        try:
-            conn = psycopg2.connect(
-                host="localhost",
-                database="mtapi",
-                user="host",
-                password="47479031"
-            )
-
-            cur = conn.cursor()
-            cur.execute(query, (email,))
-
-            row = cur.fetchone()
-
-            if row is not None:
-                return row
-            return "Not Found"
-        except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
-            return error
+        db_connection = Db()
+        is_taken = db_connection.email_taken(email)
+        return is_taken
 
     def validate_password(self, password):
         """

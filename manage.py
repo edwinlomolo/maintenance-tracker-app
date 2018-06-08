@@ -1,8 +1,7 @@
 """
 Create tables for our database
 """
-import os
-import psycopg2
+from models.db import Db
 
 def create_tables():
     """
@@ -12,7 +11,10 @@ def create_tables():
         """
         CREATE TABLE IF NOT EXISTS USERS (
           id SERIAL PRIMARY KEY,
-          email VARCHAR(225) NOT NULL UNIQUE,
+          firstname VARCHAR(50) NOT NULL,
+          lastname VARCHAR(50) NOT NULL,
+          username VARCHAR(50) NOT NULL UNIQUE,
+          email VARCHAR(50) NOT NULL UNIQUE,
           is_admin VARCHAR(10) DEFAULT FALSE NOT NULL,
           password VARCHAR(225) NOT NULL
         )
@@ -20,9 +22,9 @@ def create_tables():
         """
         CREATE TABLE IF NOT EXISTS REQUESTS (
           id SERIAL PRIMARY KEY,
-          title VARCHAR(300) NOT NULL,
+          title VARCHAR(100) NOT NULL,
           description VARCHAR(500) NOT NULL,
-          location VARCHAR(100) NOT NULL,
+          location VARCHAR(50) NOT NULL,
           approved BOOLEAN DEFAULT FALSE NOT NULL,
           rejected BOOLEAN DEFAULT FALSE NOT NULL,
           resolved BOOLEAN DEFAULT FALSE NOT NULL,
@@ -33,24 +35,10 @@ def create_tables():
     )
 
     # Try connecting to the database
-    try:
-        conn = psycopg2.connect(
-            host=os.getenv('HOST'),
-            database=os.getenv('DATABASE'),
-            user=os.getenv('USER'),
-            password=os.getenv('PASS')
-        )
+    db_connection = Db()
 
-        cur = conn.cursor()
-
-        for table in tables:
-            cur.execute(table)
-        cur.close()
-        conn.commit()
-        conn.close()
-
-    except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
-        print error
+    for table in tables:
+        db_connection.create_table(table)
 
 if __name__ == '__main__':
     create_tables()
