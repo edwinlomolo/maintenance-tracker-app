@@ -41,11 +41,11 @@ class User(object):
                 conn.close()
 
     @staticmethod
-    def query(email): # pylint: disable=no-self-use
+    def query(user_id): # pylint: disable=no-self-use
         """
         Query db for data
         """
-        query = """SELECT EMAIL FROM USERS WHERE EMAIL = %s """
+        query = """SELECT * FROM REQUESTS WHERE ID = %d"""
         try:
             conn = psycopg2.connect(
                 host=os.getenv("HOST"),
@@ -55,9 +55,9 @@ class User(object):
             )
 
             cur = conn.cursor()
-            cur.execute(query, (email,))
+            cur.execute(query, (user_id,))
 
-            row = cur.fetchone()
+            row = cur.fetchall()
 
             if row is not None:
                 return row
