@@ -11,7 +11,7 @@ class Request(object): # pylint: disable=too-few-public-methods
 
     def __init__(self, title, description, location, created_by): # pylint: disable=too-many-arguments
         self.title = title
-        self.description = description,
+        self.description = description
         self.location = location
         self.created_by = created_by
 
