@@ -27,6 +27,7 @@ class AuthenticationTestCases(unittest.TestCase):
         """
         Test API can register a new user
         """
+
         # Send request
         res = self.client().post(
             "/api/v1.0/auth/signup/",
@@ -109,11 +110,17 @@ class AuthenticationTestCases(unittest.TestCase):
         """
         Test API can handle unauthorized access
         """
+
         res = self.client().post(
             "/api/v1.0/auth/signin/",
             json=dict(email="johndoe@email.com", password="474")
         )
         result = json.loads(res.data.decode())
+        res = self.client().post("/users/api/v1.0/authenticate/", json=dict(
+            email="milly@gmail.com",
+            password=12
+        ))
+        data = json.loads(res.get_data(as_text=True))
         self.assertEqual(res.status_code, 401)
         self.assertEqual(result["error"], "Invalid password or email.")
 
@@ -154,7 +161,15 @@ class AuthenticationTestCases(unittest.TestCase):
             str(result["error"]), "Invalid email or password."
         )
 
-    def tearDown(self):
+    def test_api_can_handle_empty_response(self):
+      """
+      Test API can handle empty or invalid request
+      """
+        res = self.client().post("/users/api/v1.0/account/register/")
+        data = json.loads(res.get_data(as_text=True))
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(str(data["error"]), "Bad request")
+     def tearDown(self):
         """
         Clean up database after running tests
         """
