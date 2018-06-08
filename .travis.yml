@@ -16,12 +16,10 @@ python:
 
 before_install:
   - sudo -H pip install --upgrade pip
+  - export SECRET_KEY=47479031
   
 install:
   - pip install --user -r requirements.txt
-
-script:
-  - nosetests --with-coverage --cover-package=app tests/ && coverage report
 
 after_success:
   - coveralls
