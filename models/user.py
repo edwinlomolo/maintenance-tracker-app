@@ -4,14 +4,8 @@ User model
 import os
 from datetime import datetime, timedelta
 from flask_bcrypt import Bcrypt
-
 import psycopg2
 import jwt
-
-import jwt
-import psycopg2
-import os
-
 
 class User(object):
     """
@@ -46,8 +40,6 @@ class User(object):
             if conn is not None:
                 conn.close()
 
-    def validate_password(self, password):
-
     @staticmethod
     def query(email): # pylint: disable=no-self-use
         """
@@ -56,10 +48,10 @@ class User(object):
         query = """SELECT EMAIL FROM USERS WHERE EMAIL = %s """
         try:
             conn = psycopg2.connect(
-                host="localhost",
-                database="mtapi",
-                user="host",
-                password="47479031"
+                host=os.getenv("HOST"),
+                database=os.getenv("DATABASE"),
+                user=os.getenv("USER"),
+                password=os.getenv("PASS")
             )
 
             cur = conn.cursor()
@@ -69,7 +61,7 @@ class User(object):
 
             if row is not None:
                 return row
-            return "Not Found"
+            return None
         except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
             return error
     @staticmethod
