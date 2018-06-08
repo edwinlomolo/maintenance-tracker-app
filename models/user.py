@@ -3,9 +3,6 @@ User model
 """
 import os
 from datetime import datetime, timedelta
-import jwt
-from flask_bcrypt import Bcrypt
-from models.db import Db
 from flask_bcrypt import Bcrypt
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -16,22 +13,14 @@ class User(object):
     User class representation
     """
 
-    def __init__(self, firstname, lastname, username, email, password):
-        self.firstname = firstname
-        self.lastname = lastname
-        self.username = username
+    def __init__(self, email, password):
         self.email = email
         self.password = Bcrypt().generate_password_hash(password).decode()
 
     def save(self):
         """
-        Save user to database
+        Save user to the database
         """
-        db_connection = Db()
-        db_connection.save_new_user(self.firstname, self.lastname, self.email, self.username, self.password)
-
-    @staticmethod
-    def email_is_taken(email):
         query = """INSERT INTO USERS (email, password) VALUES(%s, %s)"""
         conn = None
         try:
@@ -55,13 +44,8 @@ class User(object):
     @staticmethod
     def query(user_id): # pylint: disable=no-self-use
         """
-        Check if email is taken
+        Query db for data
         """
-        db_connection = Db()
-        is_taken = db_connection.email_taken(email)
-        return is_taken
-
-    def validate_password(self, password):
         query = """SELECT * FROM REQUESTS WHERE CREATED_BY = %s"""
         try:
             conn = psycopg2.connect(
