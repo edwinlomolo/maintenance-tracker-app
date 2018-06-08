@@ -59,6 +59,21 @@ def create_app(config_name): # pylint: disable=too-many-locals
             return make_response(jsonify({"message": str(user_id)})), 401
         return make_response(jsonify({"message": "Invalid request"})), 500
 
+    @app.route("/api/v1.0/users/requests/", methods=["GET"])
+    def get_requests():
+        """
+        Get all requests for a logged in user
+        """
+
+        auth_header = request.headers["Authorization"] # Get Authorization value
+        token = auth_header.split(" ")[1] # split auth_header to access token value at position 1
+
+        if token:
+            user_id = User.decode_token(token)
+            if not isinstance(user_id, str):
+                row = User.query(user_id)
+                return jsonify(row)
+
     from .auth import AUTH_BLUEPRINT
     app.register_blueprint(AUTH_BLUEPRINT)
 
