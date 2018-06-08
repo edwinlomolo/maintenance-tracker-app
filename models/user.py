@@ -1,10 +1,15 @@
 """
 User model
 """
+import os
 from datetime import datetime, timedelta
 import jwt
 from flask_bcrypt import Bcrypt
 from models.db import Db
+from flask_bcrypt import Bcrypt
+import psycopg2
+from psycopg2.extras import RealDictCursor
+import jwt
 
 class User(object):
     """
@@ -27,6 +32,28 @@ class User(object):
 
     @staticmethod
     def email_is_taken(email):
+        query = """INSERT INTO USERS (email, password) VALUES(%s, %s)"""
+        conn = None
+        try:
+            conn = psycopg2.connect(
+                host=os.getenv("HOST"),
+                database=os.getenv("DATABASE"),
+                user=os.getenv("USER"),
+                password=os.getenv("PASS")
+            )
+            cur = conn.cursor()
+            cur.execute(query, (self.email, self.password,))
+
+            conn.commit()
+            conn.close()
+        except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
+            print error
+        finally:
+            if conn is not None:
+                conn.close()
+
+    @staticmethod
+    def query(user_id): # pylint: disable=no-self-use
         """
         Check if email is taken
         """
@@ -35,12 +62,33 @@ class User(object):
         return is_taken
 
     def validate_password(self, password):
+        query = """SELECT * FROM REQUESTS WHERE CREATED_BY = %s"""
+        try:
+            conn = psycopg2.connect(
+                host=os.getenv("HOST"),
+                database=os.getenv("DATABASE"),
+                user=os.getenv("USER"),
+                password=os.getenv("PASS")
+            )
+
+            cur = conn.cursor(cursor_factory=RealDictCursor)
+            cur.execute(query, (user_id,))
+
+            row = cur.fetchall()
+
+            if row is not None:
+                return row
+            return None
+        except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
+            return error
+    @staticmethod
+    def validate_password(password1, password2):
         """
         Check if passwords provided match
         """
-        return Bcrypt().check_password_hash(self.password, password)
-
-    def generate_token(self, user_id): # pylint: disable=no-self-use
+        return Bcrypt().check_password_hash(password1, password2)
+    @staticmethod
+    def generate_token(user_id): # pylint: disable=no-self-use
         """
         Generate JWT token for access and authentication
         """
@@ -55,7 +103,7 @@ class User(object):
             # create jwt token string using the secret key
             jwt_string = jwt.encode(
                 payload,
-                current_app.config.get("SECRET_KEY"),
+                os.getenv("SECRET_KEY"),
                 algorithm="HS256"
             )
             return jwt_string
@@ -70,7 +118,7 @@ class User(object):
         """
         try:
             # try decoding using SECRET_KEY
-            payload = jwt.decode(token, current_app.config.get("SECRET_KEY"))
+            payload = jwt.decode(token, os.getenv("SECRET_KEY"))
             return payload["user_id"]
         except jwt.ExpiredSignatureError:
             # if token is expired, probe our user to login to get a new one
