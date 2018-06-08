@@ -54,7 +54,7 @@ class User(object):
                 password=os.getenv("PASS")
             )
 
-            cur = conn.cursor()
+            cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
             cur.execute(query, (user_id,))
 
             row = cur.fetchall()
