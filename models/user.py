@@ -5,6 +5,7 @@ import os
 from datetime import datetime, timedelta
 from flask_bcrypt import Bcrypt
 import psycopg2
+from psycopg2.extras import RealDictCursor
 import jwt
 
 class User(object):
@@ -54,7 +55,7 @@ class User(object):
                 password=os.getenv("PASS")
             )
 
-            cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            cur = conn.cursor(cursor_factory=RealDictCursor)
             cur.execute(query, (user_id,))
 
             row = cur.fetchall()
