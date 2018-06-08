@@ -61,7 +61,7 @@ class User(object):
 
             if row is not None:
                 return row
-            return "Not Found"
+            return None
         except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
             return error
     @staticmethod
