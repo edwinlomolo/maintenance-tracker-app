@@ -72,7 +72,7 @@ def create_app(config_name): # pylint: disable=too-many-locals
             user_id = User.decode_token(token)
             if not isinstance(user_id, str):
                 row = User.query(user_id)
-                return jsonify(row)
+                return row
 
     from .auth import AUTH_BLUEPRINT
     app.register_blueprint(AUTH_BLUEPRINT)
