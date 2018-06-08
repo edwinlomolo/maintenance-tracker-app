@@ -3,7 +3,6 @@ Registration view
 """
 import os
 import psycopg2
-
 from flask import make_response, request, jsonify
 from flask.views import MethodView
 from models.user import User
@@ -26,10 +25,10 @@ class Registration(MethodView):
             # Try connecting to the database
             try:
                 conn = psycopg2.connect(
-                    host="localhost",
-                    database="mtapi",
-                    user="edwin",
-                    password="47479031"
+                    host=os.getenv("HOST"),
+                    database=os.getenv("DATABASE"),
+                    user=os.getenv("USER"),
+                    password=os.getenv("PASS")
                 )
 
                 # Query to search for an email from users table
