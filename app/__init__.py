@@ -78,6 +78,24 @@ def create_app(config_name): # pylint: disable=too-many-locals
             return make_response(jsonify({"error": str(user_id)})), 401
         return make_response(jsonify({"error": "Invalid request"})), 500
 
+    @app.route("/api/v1.0/users/requests/<int:request_id>/", methods=["GET"])
+    def get_request(request_id):
+        """
+        Get a request for a logged in user
+        """
+        auth_header = request.headers["Authorization"] # get Authorization value
+        token = auth_header.split(" ")[1] # get user token
+
+        if token:
+            user_id = User.decode_token(token)
+            if not isinstance(user_id, str):
+                req = Request.get_request(user_id, request_id)
+                if req is not None:
+                    return jsonify(req)
+                return make_response(jsonify({"error": "Not Found"})), 404
+            return make_response(jsonify({"error": str(user_id)})), 401
+        return make_response(jsonify({"error": "Invalid request"})), 500
+
     from .auth import AUTH_BLUEPRINT
     app.register_blueprint(AUTH_BLUEPRINT)
 
