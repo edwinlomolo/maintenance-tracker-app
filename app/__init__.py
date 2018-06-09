@@ -8,6 +8,11 @@ from flask import Flask, abort, jsonify, request, make_response
 # import configurations variables
 from instance.config import APP_CONFIG
 
+# Get DB
+from models.db import Db
+
+DB = Db()
+
 """
 define create_app to create and return Flask app
 """
@@ -24,7 +29,7 @@ def create_app(config_name): # pylint: disable=too-many-locals
     app.config.from_object(APP_CONFIG[config_name])
     app.config.from_pyfile("config.py")
 
-    @app.route("/api/v1.0/users/requests/", methods=["POST"])
+    @app.route("/api/v1/users/requests/", methods=["POST"])
     def create_request():
         """
         Create new request for logged in user
@@ -33,10 +38,11 @@ def create_app(config_name): # pylint: disable=too-many-locals
         token = auth_header.split(" ")[1] # split header to obtain token
 
         if token:
-            user_id = User.decode_token(token)
-            # check if user_id is a string
-            if not isinstance(user_id, str):
-                if request.json and request.json.get('title') and request.json.get('description') and request.json.get('location'):
+            user = User.decode_token(token)
+            # check if user is a string
+            if not isinstance(user, str):
+                if request.json and request.json.get('title') and \
+                request.json.get('description') and request.json.get('location'):
                     title = request.json.get('title')
                     description = request.json.get('description')
                     location = request.json.get('location')
@@ -44,7 +50,7 @@ def create_app(config_name): # pylint: disable=too-many-locals
                         title=title,
                         description=description,
                         location=location,
-                        created_by=user_id
+                        created_by=user["id"]
                     )
                     req.save()
                     return make_response(jsonify({
@@ -54,12 +60,12 @@ def create_app(config_name): # pylint: disable=too-many-locals
                         "created_by": req.created_by
                     })), 201
                 return make_response(jsonify({
-                    "error": "Provide necessary data for making a request."
+                    "error": "Please provide the title, description, and location of you request."
                 })), 400
-            return make_response(jsonify({"message": str(user_id)})), 401
+            return make_response(jsonify({"message": str(user)})), 401
         return make_response(jsonify({"message": "Invalid request"})), 500
 
-    @app.route("/api/v1.0/users/requests/", methods=["GET"])
+    @app.route("/api/v1/users/requests/", methods=["GET"])
     def get_requests():
         """
         Get all requests for a logged in user
@@ -69,16 +75,16 @@ def create_app(config_name): # pylint: disable=too-many-locals
         token = auth_header.split(" ")[1] # split auth_header to access token value at position 1
 
         if token:
-            user_id = User.decode_token(token)
-            if not isinstance(user_id, str):
-                row = User.query(user_id)
-                if row is not None:
-                    return jsonify(row)
+            user = User.decode_token(token)
+            if not isinstance(user, str):
+                result = DB.get_request_by_user_id(user["id"])
+                if result is not None:
+                    return make_response(jsonify(result)), 200
                 return make_response(jsonify({"error": "Not Found"})), 404
-            return make_response(jsonify({"error": str(user_id)})), 401
+            return make_response(jsonify({"error": str(user)})), 401
         return make_response(jsonify({"error": "Invalid request"})), 500
 
-    @app.route("/api/v1.0/users/requests/<int:request_id>/", methods=["GET"])
+    @app.route("/api/v1/users/requests/<int:request_id>/", methods=["GET"])
     def get_request(request_id):
         """
         Get a request for a logged in user
@@ -87,14 +93,47 @@ def create_app(config_name): # pylint: disable=too-many-locals
         token = auth_header.split(" ")[1] # get user token
 
         if token:
-            user_id = User.decode_token(token)
-            if not isinstance(user_id, str):
-                req = Request.get_request(user_id, request_id)
-                if req is not None:
-                    return jsonify(req)
-                return make_response(jsonify({"error": "Not Found"})), 404
-            return make_response(jsonify({"error": str(user_id)})), 401
-        return make_response(jsonify({"error": "Invalid request"})), 500
+            user = User.decode_token(token)
+            if not isinstance(user, str):
+                result = DB.get_request_by_id(request_id, user["id"])
+                if result is not None:
+                    return make_response(jsonify(result)), 200
+                return make_response(jsonify({"message": "You have no request of id {} created by you.".format(request_id)})), 401
+            return make_response(jsonify({"message": str(user)})), 401
+        return make_response(jsonify({"message": "Something went wrong"})), 500
+
+    @app.route("/api/v1/users/requests/<int:request_id>/", methods=["PUT"])
+    def edit_request(request_id):
+        """
+        Logged in user can edit his/her request
+        """
+        if request.json:
+            auth_header = request.headers["Authorization"]
+            token = auth_header.split(" ")[1]
+
+            user = User.decode_token(token)
+            if not isinstance(user, str):
+                result = DB.get_request_by_id(request_id, user["id"])
+                if result is not None:
+                    if result["approved"]:
+                        return make_response(jsonify({
+                            "message": "This request is already approved. You can't revert, instead create a new one."
+                        })), 401
+                    obj = {
+                        "title": request.json.get('title', result["title"]),
+                        "description": request.json.get('description', result["description"]),
+                        "location": request.json.get('location', result["location"]),
+                        "approved": result["approved"],
+                        "rejected": result["rejected"],
+                        "resolved": result["resolved"]
+                    }
+                    DB.update_request(obj["title"], obj["description"],
+                                      obj["location"], obj["approved"], obj["rejected"],
+                                      obj["resolved"], request_id, user["id"])
+                    return make_response(jsonify(obj)), 200
+                return make_response(jsonify({"message": "Can't find request {} created by you. You may not have the right access to that request.".format(request_id)})), 401
+            return make_response(jsonify({"message": str(user)})), 401
+        return make_response(jsonify({"message": "You only have the right access to edit your request title, description and location"})), 400
 
     from .auth import AUTH_BLUEPRINT
     app.register_blueprint(AUTH_BLUEPRINT)
