@@ -7,6 +7,7 @@ from flask import make_response, request, jsonify
 from flask.views import MethodView
 from models.user import User
 from validate_email import validate_email
+from utils.validate_password import validate_password
 
 from . import AUTH_BLUEPRINT
 
@@ -18,53 +19,33 @@ class Registration(MethodView):
         """
         Handle post requests on this view
         """
-        if request.json and request.json.get('email') and request.json.get('password'):
-
-            # Get data from body
-            email = request.json.get('email')
-            password = request.json.get('password')
-            is_valid = validate_email(email)
-
-            if is_valid:
-                # Try connecting to the database
-                try:
-                    conn = psycopg2.connect(
-                        host=os.getenv("HOST"),
-                        database=os.getenv("DATABASE"),
-                        user=os.getenv("USER"),
-                        password=os.getenv("PASS")
-                    )
-                    query = """SELECT EMAIL FROM USERS WHERE EMAIL = %s"""
-
-                    # Get cursor object
-                    cur = conn.cursor()
-                    cur.execute(query, (email,))
-
-                    row = cur.fetchone()
-
-                    if row is not None:
-                        return make_response(jsonify({
-                            "message": "Email already taken. Please choose a different one."
-                        })), 202
-                    user = User(email=email, password=password)
-                    user.save()
-                    return make_response(jsonify({
-                        "message": "You successfully registered. You can log in now."
-                    })), 201
-                except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
-                    return make_response(jsonify({
-                        "error": str(error)
-                    })), 500
-            else:
-                return make_response(jsonify({
-                    "error": "Invalid email address. Provide a valid email address."
-                })), 400
-
-        else:
-            # If both email and password are not provided
-            return make_response(jsonify({
-                "error": "Please provide both an email and password."
-            })), 400
+        if request.json:
+            if request.json.get('firstname'):
+                if request.json.get('lastname'):
+                    if request.json.get('email'):
+                        if request.json.get('username'):
+                            if request.json.get('password'):
+                                password = str(request.json.get('password'))
+                                password_is_valid = validate_password(password)
+                                if password_is_valid:
+                                    firstname = str(request.json.get('firstname'))
+                                    lastname = str(request.json.get('lastname'))
+                                    email = str(request.json.get('email'))
+                                    username = str(request.json.get('username'))
+                                    password = str(request.json.get('password'))
+                                    return jsonify({"message":" Ok"})
+                                return jsonify({
+                                    "message": "Your password should be of 8 characters, contains an uppercase letter and lowercase letter, and should contain a number or digit"
+                                }), 202
+                            return jsonify({"message": "Please provide a password"}), 202
+                        return  jsonify({"message": "Please provide a username"}), 202
+                    return jsonify({"message": "Please provide your email"}), 202
+                return jsonify({"message": "Please provide your lastname"}), 202
+            return jsonify({"message": "Please provide your firstname"}), 202
+        return jsonify({
+            "message": "Please provide your firstname, \
+            lastname, email, username, and password for sign up."
+        }), 202
 
 class Login(MethodView):
     """
