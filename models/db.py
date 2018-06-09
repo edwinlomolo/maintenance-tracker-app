@@ -34,7 +34,6 @@ class Db(object):
         cur.execute(query, (firstname, lastname, email, username, password,))
         self.connection.commit()
         cur.close()
-        self.connection.close()
 
     def email_taken(self, email):
         """
@@ -45,7 +44,6 @@ class Db(object):
         cur.execute(query, (email,))
         result = cur.fetchone()
         cur.close()
-        self.connection.close()
         if result is not None:
             return True
         return False
@@ -59,7 +57,6 @@ class Db(object):
         cur.execute(query, (username,))
         result = cur.fetchone()
         cur.close()
-        self.connection.close()
         if result is not None:
             return True
         return False
@@ -73,7 +70,6 @@ class Db(object):
         cur.execute(query, (user_id,))
         result = cur.fetchall()
         cur.close()
-        self.connection.close()
         if len(result) >= 1:
             return result
         return None
