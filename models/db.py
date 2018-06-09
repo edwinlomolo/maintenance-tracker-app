@@ -50,6 +50,34 @@ class Db(object):
             return True
         return False
 
+    def username_taken(self, username):
+        """
+        Get username from database
+        """
+        query = """SELECT USERNAME FROM USERS WHERE USERNAME = %s"""
+        cur = self.connection.cursor(cursor_factory=RealDictCursor)
+        cur.execute(query, (username,))
+        result = cur.fetchone()
+        cur.close()
+        self.connection.close()
+        if result is not None:
+            return True
+        return False
+
+    def filter_requests_by_id(self, user_id):
+        """
+        Get data from db using id value
+        """
+        query = """SELECT * FROM REQUESTS WHERE CREATED_BY = %s"""
+        cur = self.connection.cursor(cursor_factory=RealDictCursor)
+        cur.execute(query, (user_id,))
+        result = cur.fetchall()
+        cur.close()
+        self.connection.close()
+        if len(result) >= 1:
+            return result
+        return None
+
     def create_table(self, query):
         """
         Create table
