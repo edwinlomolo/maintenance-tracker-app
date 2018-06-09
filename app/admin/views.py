@@ -28,7 +28,7 @@ class GetRequest(MethodView):
                 if is_admin:
                     requests = DB.get_all()
                     if requests is not None:
-                        return jsonify(user), 200
+                        return jsonify(requests), 200
                     return jsonify({"message": "Requests not created yet"}), 404
                 return jsonify({"message": "You don't have the right access to access this view"}), 401
             return jsonify({"message": str(user)}), 401
