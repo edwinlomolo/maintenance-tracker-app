@@ -8,8 +8,11 @@ from flask.views import MethodView
 from models.user import User
 from validate_email import validate_email
 from utils.validate_password import validate_password
+from models.db import Db
 
 from . import AUTH_BLUEPRINT
+
+DB = Db()
 
 class Registration(MethodView):
     """
@@ -60,49 +63,29 @@ class Login(MethodView):
     """
     def post(self): # pylint: disable=no-self-use
         """
-        Handles post requests on this view
+        Handle post in this view
         """
-        if request.json and request.json.get('email') and request.json.get('password'):
+        if request.json:
+            if request.json.get('email'):
+                if request.json.get('password'):
+                    email = request.json.get('email')
+                    password = request.json.get('password')
+                    email_is_valid = validate_email(email)
+                    if email_is_valid:
+                        data = DB.filter_by_email(email)
+                        if data is not None:
+                            if User.validate_password(data["password"], password):
+                                return jsonify({
+                                    "message": "Logged in successfully",
+                                    "token": User.generate_token(data)
+                                }), 200
+                            return jsonify({"error": "Invalid password"}), 401
+                        return jsonify({"message": "No user with such email. Please register for an account."}), 202
+                    return jsonify({"message": "Invalid email. Valid format is example@email.com"}), 202
+                return jsonify({"message": "You need a password to login. Please, provide yours."}), 202
+            return jsonify({"message": "You need an email to login. Please, provide yours."}), 202
+        return jsonify({"message": "You need an email and password to login. Please, provide yours or register one."})
 
-            # Get data from request
-            email = request.json.get('email')
-            password = request.json.get('password')
-
-            # Try connecting to database
-            try:
-                conn = psycopg2.connect(
-                    host=os.getenv("HOST"),
-                    database=os.getenv("DATABASE"),
-                    user=os.getenv("USER"),
-                    password=os.getenv("PASS")
-                )
-                query = """SELECT ID, EMAIL, PASSWORD FROM USERS WHERE EMAIL = %s"""
-
-                cur = conn.cursor()
-                cur.execute(query, (email,))
-
-                row = cur.fetchone()
-
-                # Validate password
-                if row is not None and User.validate_password(row[2], password):
-                    # Send back token
-                    return make_response(jsonify({
-                        "message": "Logged in successfully.",
-                        "token": User.generate_token(row[0])
-                    })), 200
-                # If wrong password or incorrect email address
-                return make_response(jsonify({
-                    "error": "Invalid email or password."
-                })), 401
-            except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
-                return make_response(jsonify({
-                    "error": str(error)
-                })), 500
-        else:
-            # If request is empty
-            return make_response(jsonify({
-                "message": "Please provide both a valid email and password to log in."
-            }))
 
 # Define Signup Resource
 SIGN_UP = Registration.as_view("signup_view")

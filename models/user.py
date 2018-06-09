@@ -60,7 +60,7 @@ class User(object):
         """
         return Bcrypt().check_password_hash(password1, password2)
     @staticmethod
-    def generate_token(user_id): # pylint: disable=no-self-use
+    def generate_token(data): # pylint: disable=no-self-use
         """
         Generate JWT token for access and authentication
         """
@@ -69,7 +69,10 @@ class User(object):
             payload = {
                 "exp": datetime.utcnow() + timedelta(minutes=60),
                 "iat": datetime.utcnow(),
-                "user_id": user_id
+                "user": {
+                    "id": data["id"],
+                    "is_admin": data["is_admin"]
+                }
             }
 
             # create jwt token string using the secret key
@@ -91,7 +94,7 @@ class User(object):
         try:
             # try decoding using SECRET_KEY
             payload = jwt.decode(token, os.getenv("SECRET_KEY"))
-            return payload["user_id"]
+            return payload["user"]
         except jwt.ExpiredSignatureError:
             # if token is expired, probe our user to login to get a new one
             return "Expired token. Please login to get a new one."

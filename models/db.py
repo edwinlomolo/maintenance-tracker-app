@@ -82,3 +82,17 @@ class Db(object):
         cur.execute(query)
         self.connection.commit()
         cur.close()
+
+    def filter_by_email(self, email):
+        """
+        Get user from database using his/her email
+        """
+        query = """SELECT * FROM USERS WHERE EMAIL = %s"""
+        cur = self.connection.cursor(cursor_factory=RealDictCursor)
+        cur.execute(query, (email,))
+        result = cur.fetchone()
+        cur.close()
+        if result is not None:
+            return result
+        return None
+
