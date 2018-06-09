@@ -14,11 +14,12 @@ class User(object):
     User class representation
     """
 
-    def __init__(self, firstname, lastname, email, username, password):
+    def __init__(self, firstname, lastname, email, username, is_admin, password):
         self.firstname = firstname
         self.lastname = lastname
         self.email = email
         self.username = username
+        self.is_admin = is_admin
         self.password = Bcrypt().generate_password_hash(password).decode()
 
     def save(self):
@@ -26,7 +27,7 @@ class User(object):
         Save user to the database
         """
         DB.save_new_user(self.firstname, self.lastname, self.email,
-                         self.username, self.password)
+                         self.username, self.is_admin, self.password)
 
     @staticmethod
     def filter_requests_by_user_id(user_id): # pylint: disable=no-self-use

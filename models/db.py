@@ -23,15 +23,15 @@ class Db(object):
         except psycopg2.DatabaseError as error:
             print error
 
-    def save_new_user(self, firstname, lastname, email, username, password):
+    def save_new_user(self, firstname, lastname, email, username, is_admin, password):
         """
         Save user to the database
         """
         query = """
-        INSERT INTO USERS (firstname, lastname, email, username, password) VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO USERS (firstname, lastname, email, username, is_admin, password) VALUES (%s, %s, %s, %s, %s, %s)
         """
         cur = self.connection.cursor()
-        cur.execute(query, (firstname, lastname, email, username, password,))
+        cur.execute(query, (firstname, lastname, email, username, is_admin, password,))
         self.connection.commit()
         cur.close()
         self.connection.close()
