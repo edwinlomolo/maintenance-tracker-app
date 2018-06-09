@@ -11,6 +11,9 @@ from instance.config import APP_CONFIG
 # Get DB
 from models.db import Db
 
+# Get utils
+from utils.bool import to_bool
+
 DB = Db()
 
 """
@@ -115,7 +118,7 @@ def create_app(config_name): # pylint: disable=too-many-locals
             if not isinstance(user, str):
                 result = DB.get_request_by_id(request_id, user["id"])
                 if result is not None:
-                    if result["approved"]:
+                    if to_bool(result["approved"]):
                         return make_response(jsonify({
                             "message": "This request is already approved. You can't revert, instead create a new one."
                         })), 401
@@ -137,5 +140,8 @@ def create_app(config_name): # pylint: disable=too-many-locals
 
     from .auth import AUTH_BLUEPRINT
     app.register_blueprint(AUTH_BLUEPRINT)
+
+    from .admin import ADMIN_BLUEPRINT
+    app.register_blueprint(ADMIN_BLUEPRINT)
 
     return app

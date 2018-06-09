@@ -143,3 +143,59 @@ class Db(object):
         cur.execute(query, (title, description, location, approved, rejected, resolved, request_id, created_by,))
         self.connection.commit()
         cur.close()
+
+    def get_all(self):
+        """
+        Get all requests
+        """
+        query = """SELECT * FROM REQUESTS"""
+        cur = self.connection.cursor(cursor_factory=RealDictCursor)
+        cur.execute(query)
+        result = cur.fetchall()
+        cur.close()
+        if len(result) >= 1:
+            return result
+        return None
+
+    def get_request(self, request_id):
+        """
+        Get a request by its id
+        """
+        query = """SELECT FROM REQUESTS WHERE ID = %s"""
+        cur = self.connection.cursor(cursor_factory=RealDictCursor)
+        cur.execute(query, (request_id,))
+        result = cur.fetchone()
+        cur.close()
+        if result is not None:
+            return result
+        return None
+
+    def approve_request(self, value, request_id):
+        """
+        Approve a request
+        """
+        query = """UPDATE REQUESTS SET APPROVED = %s, RESOLVED = "Pending" WHERE ID = %s"""
+        cur = self.connection.cursor()
+        cur.execute(query, (value, request_id,))
+        self.connection.commit()
+        cur.close()
+
+    def reject_request(self, value, request_id):
+        """
+        Reject a request
+        """
+        query = """UPDATE REQUESTS SET REJECTED = %s WHERE ID = %s"""
+        cur = self.connection.cursor()
+        cur.execute(query, (value, request_id,))
+        self.connection.commit()
+        cur.close()
+
+    def resolve_request(self, value, request_id):
+        """
+        Resolve a request
+        """
+        query = """UPDATE REQUESTS SET RESOLVED = %s WHERE ID = %s"""
+        cur = self.connection.cursor()
+        cur.execute(query, (value, request_id,))
+        self.connection.commit()
+        cur.close()
