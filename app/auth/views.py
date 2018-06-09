@@ -39,7 +39,7 @@ class Registration(MethodView):
                                         return jsonify({"message": "Email is already taken. Please choose a different one"}), 202
                                     if username_is_taken:
                                         return jsonify({"message": "Username is already taken. Please choose a different one"}), 202
-                                    user = User(firstname=firstname, lastname=lastname, email=email, username=username, password=password)
+                                    user = User(firstname=firstname, lastname=lastname, email=email, username=username, is_admin=False, password=password)
                                     user.save()
                                     return jsonify({"message": "Your account was successfully created"}), 201
                                 return jsonify({
