@@ -36,8 +36,8 @@ class Registration(MethodView):
                                     email = str(request.json.get('email'))
                                     username = str(request.json.get('username'))
                                     password = str(request.json.get('password'))
-                                    email_is_taken = User.email_is_taken(email)
-                                    username_is_taken = User.username_is_taken(username)
+                                    email_is_taken = DB.email_is_taken(email)
+                                    username_is_taken = DB.username_is_taken(username)
                                     if email_is_taken:
                                         return jsonify({"message": "Email is already taken. Please choose a different one"}), 202
                                     if username_is_taken:

@@ -35,7 +35,7 @@ class Db(object):
         self.connection.commit()
         cur.close()
 
-    def email_taken(self, email):
+    def email_is_taken(self, email):
         """
         Get user email from the database
         """
@@ -48,7 +48,7 @@ class Db(object):
             return True
         return False
 
-    def username_taken(self, username):
+    def username_is_taken(self, username):
         """
         Get username from database
         """
@@ -96,3 +96,50 @@ class Db(object):
             return result
         return None
 
+    def save_new_request(self, title, description, location, created_by):
+        """
+        Save request to the database
+        """
+        query = """INSERT INTO REQUESTS (title, description, location, created_by) VALUES (%s, %s, %s, %s)"""
+        cur = self.connection.cursor()
+        cur.execute(query, (title, description, location, created_by,))
+        self.connection.commit()
+        cur.close()
+
+    def get_request_by_user_id(self, created_by):
+        """
+        Get a request using its id
+        """
+        query = """SELECT * FROM REQUESTS WHERE CREATED_BY = %s"""
+        cur = self.connection.cursor(cursor_factory=RealDictCursor)
+        cur.execute(query, (created_by,))
+        result = cur.fetchall()
+        cur.close()
+        if len(result) >= 1:
+            return result
+        return None
+
+    def get_request_by_id(self, request_id, created_by):
+        """
+        Get request by id
+        """
+        query = """
+        SELECT * FROM REQUESTS WHERE ID = %s AND CREATED_BY = %s"""
+        cur = self.connection.cursor(cursor_factory=RealDictCursor)
+        cur.execute(query, (request_id, created_by,))
+        result = cur.fetchone()
+        cur.close()
+        if result is not None:
+            return result
+        return None
+
+    def update_request(self, title, description, location, approved, rejected, resolved, request_id, created_by):
+        """
+        Update request by its id
+        """
+        query = """UPDATE REQUESTS SET TITLE = %s, DESCRIPTION = %s, LOCATION = %s,
+        APPROVED = %s, REJECTED = %s, RESOLVED = %s WHERE ID = %s AND CREATED_BY = %s"""
+        cur = self.connection.cursor()
+        cur.execute(query, (title, description, location, approved, rejected, resolved, request_id, created_by,))
+        self.connection.commit()
+        cur.close()
