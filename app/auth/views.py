@@ -1,9 +1,7 @@
 """
 Registration view
 """
-import os
-import psycopg2
-from flask import make_response, request, jsonify
+from flask import request, jsonify
 from flask.views import MethodView
 from models.user import User
 from validate_email import validate_email
@@ -76,7 +74,7 @@ class Login(MethodView):
                         if data is not None:
                             if User.validate_password(data["password"], password):
                                 return jsonify({
-                                    "message": "Logged in successfully",
+                                    "message": "Logged in as {}".format(data["username"]),
                                     "token": User.generate_token(data)
                                 }), 200
                             return jsonify({"error": "Invalid password"}), 401
