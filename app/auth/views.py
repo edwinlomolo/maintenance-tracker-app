@@ -43,7 +43,7 @@ class Registration(MethodView):
                                     user.save()
                                     return jsonify({"message": "Your account was successfully created"}), 201
                                 return jsonify({
-                                    "message": "Your password should be of 8 characters, contains an uppercase letter and lowercase letter, and should contain a number or digit"
+                                    "message": "Your password should be of 8 characters, contains an uppercase letter and lowercase letter, also and should contain a number or digit"
                                 }), 202
                             return jsonify({"message": "Please provide a password"}), 202
                         return  jsonify({"message": "Please provide a username"}), 202
@@ -51,8 +51,7 @@ class Registration(MethodView):
                 return jsonify({"message": "Please provide your lastname"}), 202
             return jsonify({"message": "Please provide your firstname"}), 202
         return jsonify({
-            "message": "Please provide your firstname, \
-            lastname, email, username, and password for sign up."
+            "message": "Please provide your firstname, lastname, email, username, and password for sign up."
         }), 202
 
 class Login(MethodView):
