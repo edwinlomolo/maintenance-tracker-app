@@ -90,7 +90,7 @@ class Login(MethodView):
 # Define Signup Resource
 SIGN_UP = Registration.as_view("signup_view")
 AUTH_BLUEPRINT.add_url_rule(
-    "/api/v1.0/auth/signup/",
+    "/api/v1/auth/signup/",
     view_func=SIGN_UP,
     methods=["POST"]
 )
@@ -98,7 +98,7 @@ AUTH_BLUEPRINT.add_url_rule(
 # Define Signin Resource
 SIGN_IN = Login.as_view("signin_view")
 AUTH_BLUEPRINT.add_url_rule(
-    "/api/v1.0/auth/signin/",
+    "/api/v1/auth/signin/",
     view_func=SIGN_IN,
     methods=["POST"]
 )
