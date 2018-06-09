@@ -4,67 +4,54 @@ User model
 import os
 from datetime import datetime, timedelta
 from flask_bcrypt import Bcrypt
-import psycopg2
-from psycopg2.extras import RealDictCursor
 import jwt
+from models.db import Db
+
+DB = Db()
 
 class User(object):
     """
     User class representation
     """
 
-    def __init__(self, email, password):
+    def __init__(self, firstname, lastname, email, username, password):
+        self.firstname = firstname
+        self.lastname = lastname
         self.email = email
+        self.username = username
         self.password = Bcrypt().generate_password_hash(password).decode()
 
     def save(self):
         """
         Save user to the database
         """
-        query = """INSERT INTO USERS (email, password) VALUES(%s, %s)"""
-        conn = None
-        try:
-            conn = psycopg2.connect(
-                host=os.getenv("HOST"),
-                database=os.getenv("DATABASE"),
-                user=os.getenv("USER"),
-                password=os.getenv("PASS")
-            )
-            cur = conn.cursor()
-            cur.execute(query, (self.email, self.password,))
-
-            conn.commit()
-            conn.close()
-        except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
-            print error
-        finally:
-            if conn is not None:
-                conn.close()
+        DB.save_new_user(self.firstname, self.lastname, self.email,
+                         self.username, self.password)
 
     @staticmethod
-    def query(user_id): # pylint: disable=no-self-use
+    def filter_requests_by_user_id(user_id): # pylint: disable=no-self-use
         """
-        Query db for data
+        Get request data created by user
         """
-        query = """SELECT * FROM REQUESTS WHERE CREATED_BY = %s"""
-        try:
-            conn = psycopg2.connect(
-                host=os.getenv("HOST"),
-                database=os.getenv("DATABASE"),
-                user=os.getenv("USER"),
-                password=os.getenv("PASS")
-            )
+        result = DB.filter_requests_by_id(user_id)
+        return result
 
-            cur = conn.cursor(cursor_factory=RealDictCursor)
-            cur.execute(query, (user_id,))
+    @staticmethod
+    def email_is_taken(email):
+        """
+        Check if email is taken
+        """
+        is_taken = DB.email_taken(email)
+        return is_taken
 
-            row = cur.fetchall()
+    @staticmethod
+    def username_is_taken(username):
+        """
+        Check if username is taken
+        """
+        is_taken = DB.username_taken(username)
+        return is_taken
 
-            if row is not None:
-                return row
-            return None
-        except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
-            return error
     @staticmethod
     def validate_password(password1, password2):
         """
