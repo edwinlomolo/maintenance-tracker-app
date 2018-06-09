@@ -33,7 +33,15 @@ class Registration(MethodView):
                                     email = str(request.json.get('email'))
                                     username = str(request.json.get('username'))
                                     password = str(request.json.get('password'))
-                                    return jsonify({"message":" Ok"})
+                                    email_is_taken = User.email_is_taken(email)
+                                    username_is_taken = User.username_is_taken(username)
+                                    if email_is_taken:
+                                        return jsonify({"message": "Email is already taken. Please choose a different one"}), 202
+                                    if username_is_taken:
+                                        return jsonify({"message": "Username is already taken. Please choose a different one"}), 202
+                                    user = User(firstname=firstname, lastname=lastname, email=email, username=username, password=password)
+                                    user.save()
+                                    return jsonify({"message": "Your account was successfully created"}), 201
                                 return jsonify({
                                     "message": "Your password should be of 8 characters, contains an uppercase letter and lowercase letter, and should contain a number or digit"
                                 }), 202
