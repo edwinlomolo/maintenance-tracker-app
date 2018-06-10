@@ -199,3 +199,13 @@ class Db(object):
         cur.execute(query, (value, request_id,))
         self.connection.commit()
         cur.close()
+
+    def delete_by_email(self, email):
+        """
+        Delete from users by email
+        """
+        query = """DELETE FROM USERS WHERE EMAIL = %s"""
+        cur = self.connection.cursor()
+        cur.execute(query, (email,))
+        self.connection.commit()
+        cur.close()

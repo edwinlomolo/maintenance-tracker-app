@@ -6,11 +6,10 @@ Tests for user
  ==> Token generation
  ===> Token validation
 """
-import os
-import psycopg2
 import unittest
 import json
 from app import create_app
+from models.db import Db
 
 class AuthenticationTestCases(unittest.TestCase):
     """
@@ -30,14 +29,16 @@ class AuthenticationTestCases(unittest.TestCase):
 
         # Send request
         res = self.client().post(
-            "/api/v1.0/auth/signup/",
-            json=dict(email="johndoe@email.com", password="4747")
+            "/api/v1/auth/signup/",
+            json=dict(firstname="John", lastname="Doe",
+                      email="johndoe@email.com", username="@edwin",
+                      is_admin=False, password="4747EdGr")
         )
         # Get result and decode
         result = json.loads(res.data.decode())
         self.assertTrue(res.status_code, 201)
         self.assertEqual(
-            str(result["message"]), "You have successfully registered, You can now log in."
+            str(result["message"]), "Your account was successfully created"
         )
 
     def test_account_duplication(self):
@@ -45,50 +46,150 @@ class AuthenticationTestCases(unittest.TestCase):
         Test API can handle email duplication error
         """
         res = self.client().post(
-            "/api/v1.0/auth/signup/",
-            json=dict(email="johndoe@email.com", password="4747")
+            "/api/v1/auth/signup/",
+            json=dict(firstname="John", lastname="Doe",
+                      email="johndoe@email.com", username="@edwin",
+                      is_admin=False, password="4747EdGr")
         )
-        result = json.loads(res.data.decode())
-        self.assertEqual(res.status_code, 202)
+        self.assertEqual(res.status_code, 201)
+        second_res = self.client().post(
+            "/api/v1/auth/signup/",
+            json=dict(firstname="John", lastname="Doe",
+                      email="johndoe@email.com", username="@edwin",
+                      is_admin=False, password="4747EdGr")
+        )
+        result = json.loads(second_res.data.decode())
+        self.assertEqual(second_res.status_code, 202)
         self.assertEqual(
-            str(result["message"]), "Email already taken. Please choose a different one."
+            str(result["message"]), "Email is already taken. Please choose a different one"
         )
+
+    def test_username_duplication(self):
+        """
+        Test API can handle username duplication
+        """
+        res = self.client().post(
+            "/api/v1/auth/signup/",
+            json=dict(firstname="John", lastname="Doe",
+                      email="johndoe@email.com", username="@edwin",
+                      is_admin=False, password="4747EdGr")
+        )
+        self.assertEqual(res.status_code, 201)
+        second_res = self.client().post(
+            "/api/v1/auth/signup/",
+            json=dict(firstname="Jane", lastname="Doe",
+                      email="janedoe@email.com", username="@edwin",
+                      is_admin=False, password="4747EdGr")
+        )
+        result = json.loads(second_res.data.decode())
+        self.assertEqual(second_res.status_code, 202)
+        self.assertEqual(
+            str(result["message"]), "Username is already taken. Please choose a different one"
+        )
+
+    def test_password_validation(self):
+        """
+        Test API can validate password
+        """
+        res = self.client().post(
+            "/api/v1/auth/signup/",
+            json=dict(firstname="John", lastname="Doe",
+                      email="johndoe@email.com", username="@edwin",
+                      is_admin=False, password="47EdGr")
+        )
+        self.assertEqual(res.status_code, 202)
+        result = json.loads(res.data.decode())
+        self.assertEqual(
+            str(result["message"]), "Your password should be of 8 characters, contains an uppercase letter and lowercase letter, also and should contain a number or digit"
+        )
+
 
     def test_signup_input(self):
         """
         Test API can handle empty requests during signup
         """
-        res = self.client().post("/api/v1.0/auth/signup/")
+        res = self.client().post("/api/v1/auth/signup/")
         result = json.loads(res.data.decode())
         self.assertEqual(res.status_code, 400)
-        self.assertEqual(str(result["error"]), "Please provide both an email and a password.")
+        self.assertEqual(
+            str(result["message"]), "Please provide your firstname, lastname, email, username, and password for sign up."
+        )
 
-    def test_email_signup(self):
+    def test_firstname_signup(self):
         """
-        Test API can handle orphaned email input during signup
+        Test API can handle orphaned input during signup
         """
         res = self.client().post(
-            "/api/v1.0/auth/signup/",
-            json=dict(email="johndoe@email.com")
+            "/api/v1/auth/signup/",
+            json=dict(lastname="Doe",
+                      email="johndoe@email.com", username="@edwin",
+                      is_admin=False, password="4747EdGr")
         )
         result = json.loads(res.data.decode())
         self.assertEqual(res.status_code, 400)
         self.assertEqual(
-            str(result["error"]), "Please provide both an email and a password."
+            str(result["message"]), "Please provide your firstname"
+        )
+
+    def test_lastname_signup(self):
+        """
+        Test API can handle orphaned input during signup
+        """
+        res = self.client().post(
+            "/api/v1/auth/signup/",
+            json=dict(firstname="John", email="johndoe@email.com", username="@edwin",
+                      is_admin=False, password="4747EdGr")
+        )
+        result = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(
+            str(result["message"]), "Please provide your lastname"
+        )
+
+    def test_username_signup(self):
+        """
+        Test API can handle orphaned input during signup
+        """
+        res = self.client().post(
+            "/api/v1/auth/signup/",
+            json=dict(firstname="John", lastname="Doe",
+                      email="johndoe@email.com", is_admin=False, password="4747EdGr")
+        )
+        result = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(
+            str(result["message"]), "Please provide a username"
+        )
+
+    def test_email_signup(self):
+        """
+        Test API can handle orphaned input during signup
+        """
+        res = self.client().post(
+            "/api/v1/auth/signup/",
+            json=dict(firstname="John", lastname="Doe", username="@edwin",
+                      is_admin=False, password="4747EdGr")
+        )
+        result = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(
+            str(result["message"]), "Please provide your email"
         )
 
     def test_password_signup(self):
         """
-        Test API can handle orphaned password input during signup
+        Test API can handle orphaned input during signup
         """
         res = self.client().post(
-            "/api/v1.0/auth/signup/",
-            json=dict(password="4747")
+            "/api/v1/auth/signup/",
+            json=dict(firstname="John", lastname="Doe",
+                      email="johndoe@email.com", username="@edwin",
+                      is_admin=False)
         )
         result = json.loads(res.data.decode())
-        self.assertEqual(res.status_code, 202)
+        self.assertEqual(res.status_code, 400)
         self.assertEqual(
-            str(result["error"]), "Please provide both an email and a password."
+            str(result["message"]), "Please provide a password"
         )
 
     def test_user_can_log_in(self):
@@ -96,15 +197,43 @@ class AuthenticationTestCases(unittest.TestCase):
         Test API can authenticate user
         """
         res = self.client().post(
-            "/api/v1.0/auth/signin/",
-            json=dict(email="johndoe@email.com", password="4747")
+            "/api/v1/auth/signup/",
+            json=dict(firstname="John", lastname="Doe",
+                      email="johndoe@email.com", username="@edwin",
+                      is_admin=False, password="4747EdGr")
         )
-        result = json.loads(res.data.decode())
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
+        second_res = self.client().post(
+            "/api/v1/auth/signin/",
+            json=dict(email="johndoe@email.com", password="4747EdGr")
+        )
+        result = json.loads(second_res.data.decode())
+        self.assertEqual(second_res.status_code, 200)
         self.assertEqual(
-            str(result["message"]), "You logged in successfully."
+            str(result["message"]), "Logged in as @edwin"
         )
-        self.assertIn("eY", str(result["token"]))
+        self.assertIn("ey", str(result["token"]))
+
+    def test_signin_with_unregistered_email(self):
+        """
+        Test API can handle unregistered email
+        """
+        res = self.client().post(
+            "/api/v1/auth/signup/",
+            json=dict(firstname="John", lastname="Doe",
+                      email="johndoe@email.com", username="@edwin",
+                      is_admin=False, password="4747EdGr")
+        )
+        self.assertEqual(res.status_code, 201)
+        second_res = self.client().post(
+            "/api/v1/auth/signin/",
+            json=dict(email="janedoe@email.com", password="4747EdGr")
+        )
+        result = json.loads(second_res.data.decode())
+        self.assertEqual(second_res.status_code, 404)
+        self.assertEqual(
+            str(result["message"]), "No user with such email. Please register for an account."
+        )
 
     def test_unauthorized_access(self):
         """
@@ -112,89 +241,81 @@ class AuthenticationTestCases(unittest.TestCase):
         """
 
         res = self.client().post(
-            "/api/v1.0/auth/signin/",
-            json=dict(email="johndoe@email.com", password="474")
+            "/api/v1/auth/signup/",
+            json=dict(firstname="John", lastname="Doe",
+                      email="johndoe@email.com", username="@edwin",
+                      is_admin=False, password="4747EdGr")
         )
-        result = json.loads(res.data.decode())
-        res = self.client().post("/users/api/v1.0/authenticate/", json=dict(
-            email="milly@gmail.com",
-            password=12
-        ))
-        data = json.loads(res.get_data(as_text=True))
-        self.assertEqual(res.status_code, 401)
-        self.assertEqual(result["error"], "Invalid password or email.")
-
+        self.assertEqual(res.status_code, 201)
+        second_res = self.client().post(
+            "/api/v1/auth/signin/",
+            json=dict(email="johndoe@email.com", password="4745EdGr")
+        )
+        result = json.loads(second_res.data.decode())
+        self.assertEqual(second_res.status_code, 401)
+        self.assertEqual(
+            str(result["message"]), "Invalid password"
+        )
     def test_signin_input(self):
         """
         Test API can handle empty requests during signin
         """
-        res = self.client().post("/api/v1.0/auth/signin/")
+        res = self.client().post("/api/v1/auth/signin/")
         result = json.loads(res.data.decode())
         self.assertEqual(res.status_code, 400)
-        self.assertEqual(str(result["error"]), "Invalid email or password.")
+        self.assertEqual(
+            str(result["message"]), "You need an email and password to login. Please, provide yours or register one."
+        )
 
-    def test_orphaned_email(self):
+    def test_no_email_provided(self):
+        """
+        Test API can handle no email input
+        """
+        res = self.client().post("/api/v1/auth/signin/", json=dict(password="4747EdGr"))
+        result = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(
+            str(result["message"]), "You need an email to login. Please, provide yours."
+        )
+
+    def test_no_password_provided(self):
+        """
+        Test API can handle no email input
+        """
+        res = self.client().post("/api/v1/auth/signin/", json=dict(email="johndoe@email.com"))
+        result = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(
+            str(result["message"]), "You need a password to login. Please, provide yours."
+        )
+
+    def test_invalid_email(self):
         """
         Test API can handle orphaned email input during signin
         """
         res = self.client().post(
-            "/api/v1.0/auth/signin/",
-            json=dict(email="johndoe@email.com")
+            "/api/v1/auth/signup/",
+            json=dict(firstname="John", lastname="Doe",
+                      email="johndoe@email.com", username="@edwin",
+                      is_admin=False, password="4747EdGr")
         )
-        result = json.loads(res.data.decode())
-        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.status_code, 201)
+        second_res = self.client().post(
+            "/api/v1/auth/signin/",
+            json=dict(email="johndoeemail.com", password="4747EdGr")
+        )
+        result = json.loads(second_res.data.decode())
+        self.assertEqual(second_res.status_code, 400)
         self.assertEqual(
-            str(result["error"]), "Invalid email or password."
+            str(result["message"]), "Invalid email. Valid format is example@email.com"
         )
 
-    def test_orphaned_password(self):
+    def tearDown(self):
         """
-        Test API can handle orphaned password input
+        Clean database
         """
-        res = self.client().post(
-            "/api/v1.0/auth/signup/",
-            json=dict(password="4747")
-        )
-        result = json.loads(res.data.decode())
-        self.assertEqual(res.status_code, 202)
-        self.assertEqual(
-            str(result["error"]), "Invalid email or password."
-        )
-
-    def test_api_can_handle_empty_response(self):
-      """
-      Test API can handle empty or invalid request
-      """
-        res = self.client().post("/users/api/v1.0/account/register/")
-        data = json.loads(res.get_data(as_text=True))
-        self.assertEqual(res.status_code, 400)
-        self.assertEqual(str(data["error"]), "Bad request")
-     def tearDown(self):
-        """
-        Clean up database after running tests
-        """
-        conn = None
-        try:
-            conn = psycopg2.connect(
-                host=os.getenv("HOST"),
-                database=os.getenv("DATABASE"),
-                user=os.getenv("USER"),
-                password=os.getenv("PASS")
-            )
-
-            query = """DELETE FROM USERS WHERE EMAIL = %s"""
-            email = "johndoe@email.com"
-
-            cur = conn.cursor()
-            cur.execute(query, (email,))
-
-            cur.close()
-            conn.commit()
-        except(Exception, psycopg2.DatabaseError) as error: # pylint: disable=broad-except
-            print error
-        finally:
-            if conn is not None:
-                conn.close()
+        DB = Db()
+        DB.delete_by_email("johndoe@email.com")
 
 if __name__ == '__main__':
     unittest.main()
