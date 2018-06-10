@@ -118,7 +118,8 @@ def create_app(config_name): # pylint: disable=too-many-locals
             if not isinstance(user, str):
                 result = DB.get_request_by_id(request_id, user["id"])
                 if result is not None:
-                    if to_bool(result["approved"]):
+                    is_admin = to_bool(result["approved"])
+                    if is_admin:
                         return make_response(jsonify({
                             "message": "This request is already approved. You can't revert, instead create a new one."
                         })), 401
