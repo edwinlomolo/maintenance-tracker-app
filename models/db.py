@@ -161,7 +161,7 @@ class Db(object):
         """
         Get a request by its id
         """
-        query = """SELECT FROM REQUESTS WHERE ID = %s"""
+        query = """SELECT * FROM REQUESTS WHERE ID = %s"""
         cur = self.connection.cursor(cursor_factory=RealDictCursor)
         cur.execute(query, (request_id,))
         result = cur.fetchone()
@@ -174,7 +174,7 @@ class Db(object):
         """
         Approve a request
         """
-        query = """UPDATE REQUESTS SET APPROVED = %s, RESOLVED = "Pending" WHERE ID = %s"""
+        query = """UPDATE REQUESTS SET APPROVED = %s, RESOLVED = 'Pending' WHERE ID = %s"""
         cur = self.connection.cursor()
         cur.execute(query, (value, request_id,))
         self.connection.commit()
