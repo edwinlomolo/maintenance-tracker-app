@@ -5,9 +5,9 @@ def to_bool(param):
     """
     Convert string to boolean
     """
-    if param == "false" or "False":
+    if param == "false":
         return False
-    elif param == "true" or "True":
+    elif param == "true":
         return True
     else:
         return False
