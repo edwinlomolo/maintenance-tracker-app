@@ -42,7 +42,7 @@ class User(object):
         """
         Check if email is taken
         """
-        is_taken = DB.email_taken(email)
+        is_taken = DB.email_is_taken(email)
         return is_taken
 
     @staticmethod
@@ -50,7 +50,7 @@ class User(object):
         """
         Check if username is taken
         """
-        is_taken = DB.username_taken(username)
+        is_taken = DB.username_is_taken(username)
         return is_taken
 
     @staticmethod
