@@ -75,7 +75,7 @@ class Login(MethodView):
                             if User.validate_password(data["password"], password):
                                 return jsonify({
                                     "message": "Logged in as {}".format(data["username"]),
-                                    "token": User.generate_token(data)
+                                    "token": User.generate_token(data).decode('utf-8')
                                 }), 200
                             return jsonify({"message": "Invalid password"}), 401
                         return jsonify({"message": "No user with such email. Please register for an account."}), 404
