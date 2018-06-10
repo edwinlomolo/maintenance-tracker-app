@@ -21,7 +21,7 @@ class Db(object):
                 password=os.getenv("PASS")
             )
         except psycopg2.DatabaseError as error:
-            print error
+            print(error)
 
     def save_new_user(self, firstname, lastname, email, username, is_admin, password):
         """
