@@ -26,6 +26,8 @@ install:
 
 before_script:
   - psql -c 'create database travis;' -U postgres
+  - psql -c 'create table if not exists users;' -U postgres
+  - psql -c 'create table if not exists requests;' -U postgres
 
 script:
   - nosetests --with-coverage --cover-package=app tests/
