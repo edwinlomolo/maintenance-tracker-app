@@ -46,14 +46,14 @@ class Registration(MethodView):
                                 return jsonify({
                                     "message": "Your password should be of 8 characters, contains an uppercase letter and lowercase letter, also and should contain a number or digit"
                                 }), 202
-                            return jsonify({"message": "Please provide a password"}), 202
-                        return  jsonify({"message": "Please provide a username"}), 202
-                    return jsonify({"message": "Please provide your email"}), 202
-                return jsonify({"message": "Please provide your lastname"}), 202
-            return jsonify({"message": "Please provide your firstname"}), 202
+                            return jsonify({"message": "Please provide a password"}), 400
+                        return  jsonify({"message": "Please provide a username"}), 400
+                    return jsonify({"message": "Please provide your email"}), 400
+                return jsonify({"message": "Please provide your lastname"}), 400
+            return jsonify({"message": "Please provide your firstname"}), 400
         return jsonify({
             "message": "Please provide your firstname, lastname, email, username, and password for sign up."
-        }), 202
+        }), 400
 
 class Login(MethodView):
     """
@@ -77,12 +77,12 @@ class Login(MethodView):
                                     "message": "Logged in as {}".format(data["username"]),
                                     "token": User.generate_token(data)
                                 }), 200
-                            return jsonify({"error": "Invalid password"}), 401
-                        return jsonify({"message": "No user with such email. Please register for an account."}), 202
-                    return jsonify({"message": "Invalid email. Valid format is example@email.com"}), 202
-                return jsonify({"message": "You need a password to login. Please, provide yours."}), 202
-            return jsonify({"message": "You need an email to login. Please, provide yours."}), 202
-        return jsonify({"message": "You need an email and password to login. Please, provide yours or register one."})
+                            return jsonify({"message": "Invalid password"}), 401
+                        return jsonify({"message": "No user with such email. Please register for an account."}), 404
+                    return jsonify({"message": "Invalid email. Valid format is example@email.com"}), 400
+                return jsonify({"message": "You need a password to login. Please, provide yours."}), 400
+            return jsonify({"message": "You need an email to login. Please, provide yours."}), 400
+        return jsonify({"message": "You need an email and password to login. Please, provide yours or register one."}), 400
 
 
 # Define Signup Resource

@@ -63,7 +63,7 @@ def create_app(config_name): # pylint: disable=too-many-locals
                         "created_by": req.created_by
                     })), 201
                 return make_response(jsonify({
-                    "error": "Please provide the title, description, and location of you request."
+                    "message": "Please provide the title, description, and location of your request."
                 })), 400
             return make_response(jsonify({"message": str(user)})), 401
         return make_response(jsonify({"message": "Invalid request"})), 500
