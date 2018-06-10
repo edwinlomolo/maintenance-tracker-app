@@ -3,6 +3,9 @@ langauge: python
 virtualenv:
   system_site_packages: true
 
+services:
+  - postgresql
+
 python:
   - "2.6"
   - "2.7"
@@ -20,6 +23,9 @@ before_install:
   
 install:
   - pip install --user -r requirements.txt
+
+before_script:
+  - psql -c 'create database travis;' -U postgres
 
 script:
   - nosetests --with-coverage --cover-package=app tests/
