@@ -24,18 +24,19 @@ The App UI elements are being hosted here [Maintenance Tracker](https://3dw1nm05
  * Admin should be able to view all repairs or maintenance requests made on the application
  * Admin should be able to filter requests
  * User can view his/her requests
- * Users can be able to edit their requests
+ * Users can be able to edit their requests only if the request is not approved
 
 ### Extra Features
  * Users can be able to make a request using their location
  * Users can be able to see if their request is resolved
  * Users can be able to see if their request is rejected
  * Users can be able to see if their request is approved
- * Admin can be able to see who/where the request was made from
+ * Admin can be able to see where the request was made from
 
 ### Technology Stack
  * [Flask](http://flask.pocoo.org/)
  * HTML and CSS(Front End Development)
+ * [PostgreSQL](https://www.postgresql.org/)
 
 ### Tools
  * [Pivotal Tracker](https://www.pivotaltracker.com/n/projects/2174758) - Project Management Tool
@@ -128,15 +129,16 @@ your browser or [Curl](https://curl.haxx.se/).
 
 **Endpoint** | **HTTP Method** | **Resource** | **Access Type** 
 -------------|-----------------|--------------|----------------
-/users/api/v1.0/account/register/ | POST | Create account | Public
-/users/api/v1.0/authenticate/ | POST | Login | Public
-/users/api/v1.0/requests/ | GET | Get requests for logged in user | Private(Authenticated users only)
-/users/api/v1.0/requests/ | POST | Create request | Private(Authenticated users only)
-/users/api/v1.0/requests/id/ | GET | Get a specific request | Private(Authenticated users only)
-/users/api/v1.0/requests/id/ | PUT | Edit a specific request | Private(Authenticated users only)
-/admin/api/v1.0/requests/ | GET | Get all requests | Private(Admin only)
-/admin/api/v1.0/requests/id/ | GET | Get a specific request details | Private(Admin only)
-/admin/api/v1.0/requests/id/ | PUT | Edit a request | Private(Admin only)
+/api/v1/auth/signup/ | POST | Create account | Public
+/api/v1/auth/signin/ | POST | Login | Public
+/api/v1/users/requests/ | POST | Create request | Private(Authenticated users only)
+/api/v1/users/requests/ | GET | Get requests for logged in user | Private(Authenticated users only)
+/api/v1/users/requests/id/ | GET | Get a specific request | Private(Authenticated users only)
+/api/v1/users/requests/id/ | PUT | Edit a specific request | Private(Authenticated users only)
+/api/v1/requests/ | GET | Get all requests | Private(Admin only)
+/api/v1/requests/id/approve/ | PUT | Approve a request | Private(Admin only)
+/api/v1/requests/id/reject/ | PUT | Reject a request | Private(Admin only)
+/api/v1/requests/id/resolve/ | PUT | Resolve a request | Private(Admin only)
 
 ## Run tests
 
@@ -147,7 +149,7 @@ nosetests --rednose --with-coverage --cover-package=app tests/
 ```
 
 ## Contributing
-I appreciate your eagerness to contribute. As the project maintainer, i will start accepting contribution as from 5th June 2018.
+I appreciate your eagerness to contribute. As the project maintainer, i will start accepting contribution as from 12th June 2018.
 I will be reinforcing endpoints and make it scaleable on my end before open sourcing.Thank you for your patience.
 
 ## Author
