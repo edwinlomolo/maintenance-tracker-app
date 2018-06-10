@@ -65,7 +65,7 @@ class ApproveRequest(MethodView):
                         "location": req["location"],
                         "approved": request.json.get('approved'),
                         "rejected": req["rejected"],
-                        "resolved": req["resolved"]
+                        "resolved": "Pending"
                     }
                     DB.approve_request(request.json.get('approved'), request_id)
                     return jsonify(obj), 200

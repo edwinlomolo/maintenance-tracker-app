@@ -9,5 +9,3 @@ def to_bool(param):
         return False
     elif param == "true":
         return True
-    else:
-        return False

@@ -83,9 +83,9 @@ def create_app(config_name): # pylint: disable=too-many-locals
                 result = DB.get_request_by_user_id(user["id"])
                 if result is not None:
                     return make_response(jsonify(result)), 200
-                return make_response(jsonify({"error": "Not Found"})), 404
-            return make_response(jsonify({"error": str(user)})), 401
-        return make_response(jsonify({"error": "Invalid request"})), 500
+                return make_response(jsonify({"message": "No requests created by you currently. Create to view."})), 404
+            return make_response(jsonify({"message": str(user)})), 401
+        return make_response(jsonify({"message": "Something went wrong."})), 500
 
     @app.route("/api/v1/users/requests/<int:request_id>/", methods=["GET"])
     def get_request(request_id):
@@ -118,8 +118,7 @@ def create_app(config_name): # pylint: disable=too-many-locals
             if not isinstance(user, str):
                 result = DB.get_request_by_id(request_id, user["id"])
                 if result is not None:
-                    is_admin = to_bool(result["approved"])
-                    if is_admin:
+                    if result["resolved"] == "Pending":
                         return make_response(jsonify({
                             "message": "This request is already approved. You can't revert, instead create a new one."
                         })), 401

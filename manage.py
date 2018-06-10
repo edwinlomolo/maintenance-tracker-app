@@ -27,7 +27,7 @@ def create_tables():
           location VARCHAR(50) NOT NULL,
           approved BOOLEAN DEFAULT FALSE NOT NULL,
           rejected BOOLEAN DEFAULT FALSE NOT NULL,
-          resolved BOOLEAN DEFAULT FALSE NOT NULL,
+          resolved VARCHAR(50) DEFAULT FALSE NOT NULL,
           created_by INTEGER NOT NULL,
           FOREIGN KEY (created_by) REFERENCES USERS (id) ON DELETE CASCADE
         )
