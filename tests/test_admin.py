@@ -28,6 +28,18 @@ class AdminTestCases(unittest.TestCase):
                       username=username, is_admin=is_admin, password=password)
         )
 
+    def register_admin(self, firstname="Mitchem", lastname="Dush", email="admin@admin.com",
+                      username="@admin", is_admin=True, password="adminEdGr17"):
+        """
+        Helper function to register user
+        """
+        return self.client().post(
+            "/api/v1/auth/signup/",
+            json=dict(firstname=firstname, lastname=lastname, email=email,
+                      username=username, is_admin=is_admin, password=password)
+        )
+
+
     def login_user(self, email="johndoe@gmail.com", password="4747EdGr"):
         """
         Helper function to login user
@@ -116,6 +128,7 @@ class AdminTestCases(unittest.TestCase):
         """
         Test API can handle unauthorized approve access
         """
+        self.register_admin()
         admin = self.login_admin()
         admin_token = json.loads(admin.data.decode())["token"]
 
@@ -132,6 +145,7 @@ class AdminTestCases(unittest.TestCase):
         """
         Test API can handle unauthorized reject access
         """
+        self.register_admin()
         admin = self.login_admin()
         admin_token = json.loads(admin.data.decode())["token"]
 
@@ -202,6 +216,7 @@ class AdminTestCases(unittest.TestCase):
         """
         Test API can handle unauthorized resolve access
         """
+        self.register_admin()
         admin = self.login_admin()
         admin_token = json.loads(admin.data.decode())["token"]
 
@@ -220,6 +235,7 @@ class AdminTestCases(unittest.TestCase):
         """
         DB = Db()
         DB.delete_by_email("johndoe@gmail.com")
+        DB.delete_by_email("admin@admin.com")
 
 if __name__ == '__main__':
     unittest.main()
