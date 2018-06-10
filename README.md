@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/3dw1nM0535/maintenance-tracker-app.svg?branch=develop)](https://travis-ci.org/3dw1nM0535/maintenance-tracker-app)
+[![codecov](https://codecov.io/gh/3dw1nM0535/maintenance-tracker-app/branch/develop/graph/badge.svg)](https://codecov.io/gh/3dw1nM0535/maintenance-tracker-app)
 [![Coverage Status](https://coveralls.io/repos/github/3dw1nM0535/maintenance-tracker-app/badge.svg)](https://coveralls.io/github/3dw1nM0535/maintenance-tracker-app)
 
 # Maintenance Tracker
